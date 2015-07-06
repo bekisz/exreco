@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<bean id="gridExecutorService" class="org.exreco.experiment.jppf.GridExecutorService">
+		<property name="batchSize" value="20" />
+		<property name="batchTimeout" value="20000" />
+	</bean>
+	<!-- 
+	<bean id="sameThreadExecutorService" class="org.exreco.experiment.util.SameThreadExecutorService" />
+
+	<bean id="multiThreadExecutorService" class="org.exreco.experiment.util.MultiThreadExecutorService">
+		<property name="corePoolSize" value="4" />
+	</bean>-->
+
+	<bean id="worldTickEnded" class="org.exreco.experiment.log.TableLogger"
+		init-method="init">
+		<property name="name" value="worldTickEnded" />
+
+
+		<property name="eventHandler">
+			<bean class="org.exreco.experiment.util.events.EventMap">
+				<property name="theEventMap">
+					<map>
+
+						<entry key="org.exreco.experiment.Case$TickEndedEvent">
+
+							<bean class="org.exreco.liff.core.log.LogLineage" init-method="init">
+								<property name="dynamicAnnotatedClassName"
+									value="org.exreco.experiment.persistence.dao.LineageTickEnd" />
+								<property name="sampling" value="1" />
+								<property name="loggedSets" value="1, 1.1, 1.2" />
+								<property name="tableLogger" ref="worldTickEnded" />
+								<property name="loggedParams"
+									value="world-population, rel-population, is-exclusive-survivor, is-survivor, is-dominant-50-percent, is-dominant-95-percent, *mutation-rate.avg, *replicator-age.avg, *replicator-fitness.avg, *replicator-fitness.min, *replicator-fitness.max,
+*region-x.avg,*region-y.avg, *global-x.avg, *global-y.avg, *global-x.min, *global-y.min, *global-x.max, *global-y.max, *global-x.standard-deviation, *global-y.standard-deviation, genetic-dist-to-Eve_avg, genetic-dist-to-Eve_min, *genetic-dist-to-Eve.max, genetic-diversity
+population, all-time-population, *evolutionary-efficiency, nr-genes-in-lineage, *speed-of-evolution-10, avg-gen-distance, *nr-successful-genes-in-lineage-10, regional-spread" />
+							</bean>
+
+						</entry>
+
+					</map>
+				</property>
+			</bean>
+		</property>
+
+	</bean>
+	<bean id="worldRunEnded" class="org.exreco.experiment.log.TableLogger"
+		init-method="init">
+		<property name="name" value="worldRunEnded" />
+		<!-- <property name="rewrite" value="true" /> <property name="session" 
+			ref="sqLSession" /> -->
+
+		<property name="eventHandler">
+			<bean class="org.exreco.experiment.util.events.EventMap">
+				<property name="theEventMap">
+					<map>
+
+						<entry key="org.exreco.experiment.Case$RunEndedEvent">
+
+							<bean class="org.exreco.liff.core.log.LogLineage" init-method="init">
+								<property name="dynamicAnnotatedClassName"
+									value="org.exreco.experiment.persistence.dao.LineageWorldEnd" />
+								<property name="sampling" value="1" />
+								<property name="loggedSets" value="1.2" />
+								<property name="tableLogger" ref="worldRunEnded" />
+								<property name="loggedParams"
+									value="world-population,rel-population, is-exclusive-survivor, *is-survivor, is-dominant-50-percent, is-dominant-95-percent, *mutation-rate.avg, *replicator-age.avg,*replicator-fitness.avg, *replicator-fitness.min, *replicator-fitness.max,
+*region-x.avg,*region-y.avg, *global-x.avg, *global-y.avg, *global-x.min, *global-y.min, *global-x.max, *global-y.max, *global-x.standard-deviation, *global-y.standard-deviation,
+genetic-dist-to-Eve_avg, genetic-dist-to-Eve_min, *genetic-dist-to-Eve.max *genetic-diversity, population, *all-time-population, *evolutionary-efficiency, *nr-genes-in-lineage,
+*speed-of-evolution-10, *avg-gen-distance, *nr-successful-genes-in-lineage-10, *regional-spread" />
+							</bean>
+
+						</entry>
+
+					</map>
+				</property>
+			</bean>
+		</property>
+
+	</bean>
+	<bean id="tableLoggers" class="org.exreco.experiment.log.TableLoggers">
+		<property name="tableLoggerMap">
+			<map>
+<!-- 				<entry key="WorldTickEnded" value-ref="worldTickEnded" /> -->
+				<entry key="WorldRunEnded" value-ref="worldRunEnded" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="experiment" class="org.exreco.experiment.Experiment"
+		init-method="init">
+		<property name="tableLoggers" ref="tableLoggers" />
+		<property name="executor">
+			<ref local="gridExecutorService" />
+		</property>
+		<property name="eventTopicHome">
+		<!-- 	<bean class="org.exreco.experiment.util.events.LocalEventTopicHome" /> -->
+			 <bean class="org.exreco.experiment.jms.JmsEventTopicHome"/>   
+		</property>
+		<property name="multiplicator">
+			<bean class="org.exreco.experiment.Multiplicator" init-method="init">
+				<property name="dimensionSet">
+					<bean class="org.exreco.experiment.dim.DimensionSet">
+						<constructor-arg>
+							<map>
+								<!-- isoWorldId is an experiment neutral dimension which lets the 
+									same -->
+								<!-- world run with exactly the same input parameters executed by -->
+								<!-- the given number of times. This way can measure the statistical -->
+								<!-- probabilities of the this isoworld group -->
+								<entry key="isoCaseId">
+									<bean class="org.exreco.experiment.dim.IncrementedIntegerDimension"
+										p:max="1" />
+								</entry>
+
+								<entry key="eveGene.chanceOfSuccessfulMutation">
+									<bean class="org.exreco.experiment.dim.IncrementedDoubleDimension"
+										p:min="0.00" p:max="0.20" p:increment="0.02" />
+								</entry>
+
+								<entry key="space.squareSide">
+									<bean class="org.exreco.experiment.dim.ListedIntegerDimension">
+										<constructor-arg value="1,3,5" />
+									</bean>
+								</entry>
+								<entry key="space.regionHoppingChance">
+									<bean class="org.exreco.experiment.dim.ListedDoubleDimension">
+										<constructor-arg
+											value="0, 0.0078125, 0.015625, 0.03125,0.0625, 0.125, 0.25, 0.5,1" />
+									</bean>
+								</entry>
+								<!-- <entry key="caseInitializer"> <bean class="org.exreco.experiment.dim.ListedSpringReferenceDimension"> 
+									<constructor-arg value="segregatedReplicatorRegionsInitializer, oneVsAllReplicatorInitializer"/> 
+									</bean> </entry> -->
+								<!-- <entry key="space.squareSide"> <bean class="org.exreco.experiment.dim.ObjectDimension"> 
+									<property name="possibleValues"> <list> <bean class="java.lang.Integer"> 
+									<constructor-arg value="1"/> </bean> <bean class="java.lang.Integer"> <constructor-arg 
+									value="2"/> </bean> <bean class="java.lang.Integer"> <constructor-arg value="10"/> 
+									</bean> </list> </property> </bean> </entry> <entry key="space.squareSide"> 
+									<bean class="org.exreco.experiment.dim.IntegerDimension" p:min="1" p:max="4" 
+									p:increment="3" /> </entry> -->
+								<!-- <entry key="eveGene.survivalChance"> <bean class="org.exreco.experiment.dim.IncrementedDoubleDimension" 
+									p:min="0.89" p:max="0.999" p:increment="0.05" /> </entry> <entry key="space.wandering"> 
+									<bean class="org.exreco.experiment.dim.IncrementedDoubleDimension" p:min="0.001" 
+									p:max="0.007" p:increment="0.002" /> </entry> -->
+							</map>
+						</constructor-arg>
+					</bean>
+				</property>
+
+
+
+
+			</bean>
+
+		</property>
+	</bean>
+
+</beans>

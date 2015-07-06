@@ -1,0 +1,97 @@
+
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:p="http://www.springframework.org/schema/p" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+	<bean id="eveGene" class="org.exreco.liff.experiments.delta.WanderingDeltaGene">
+
+		<!-- property name="world" ref="world" /> -->
+		<property name="replicationFitness" value="1" />
+		<property name="survivalChance" value="0.99" />
+		<property name="maxLifeTime" value="100000000" />
+		<!-- property name="operationalGene" value="false"/ -->
+
+		<property name="mutationRate" value="0.01" />
+		<property name="chanceOfSuccessfulMutation" value="0.048" />
+		<property name="replicatorSuccessfulMutationAdvantage" value="10" />
+		<property name="chanceOfSterilisation" value="0" />
+		<property name="chanceOfDeathAfterMutation" value="1" />
+		<property name="subGenes">
+			<list>
+				<ref local="nonApoptoticGene" />
+				<ref local="apoptoticGene" />
+				<!-- <ref local="observedNonApoptoticGene" />  -->
+			</list>
+		</property>
+
+	</bean>
+	<bean id="nonApoptoticGene" class="org.exreco.liff.experiments.delta.HoppingDeltaGene"
+		parent="eveGene" init-method="deleteSubGenes">
+		<!-- <constructor-arg ref="eveGene" /> -->
+		<property name="superGene" ref="eveGene" />
+		<property name="variant" value="1" />
+		<property name="name" value="nonApoptoticGene" />
+	</bean>
+	<bean id="apoptoticGene" class="org.exreco.liff.experiments.delta.HoppingDeltaGene"
+		parent="eveGene" init-method="deleteSubGenes">
+		<!-- <constructor-arg ref="eveGene" /> -->
+		<property name="variant" value="2" />
+		<property name="maxLifeTime" value="20" />
+		<property name="superGene" ref="eveGene" />
+		<property name="name" value="apoptoticGene" />
+
+	</bean>
+	<bean id="observedNonApoptoticGene" class="org.exreco.liff.experiments.delta.HoppingDeltaGene"
+		parent="eveGene" init-method="deleteSubGenes">
+		<!-- <constructor-arg ref="eveGene" /> -->
+		<property name="superGene" ref="eveGene" />
+		<property name="variant" value="3" />
+		<property name="name" value="observedNonApoptoticGene" />
+	</bean>
+	<!-- World Initialisers -->
+	<bean id="segregatedReplicatorRegionsInitializer" class="org.exreco.liff.core.SegregatedReplicatorRegionsInitializer">
+
+	</bean>
+	<bean id="oneVsAllReplicatorInitializer" class="org.exreco.liff.core.OneVsAllReplicatorInitializer">
+
+	</bean>
+	
+	<!-- World Spaces -->
+	<bean id="wanderingReplicatorSpace" class="org.exreco.liff.core.WanderingReplicatorSpace">
+
+
+		<property name="maxPopulation" value="1000" />
+		<property name="wandering" value="0.003" />
+
+		<!-- property name="maxX" value="6" /> <property name="maxY" value="6" 
+			/> -->
+		<property name="squareSide" value="4" />
+
+
+	</bean>
+	<bean id="hoppingReplicatorSpace" class="org.exreco.liff.core.HoppingReplicatorSpace">
+
+
+		<property name="maxPopulation" value="1000" />
+		<property name="regionHoppingChance" value="0.02" />
+
+		<!-- property name="maxX" value="6" /> <property name="maxY" value="6" 
+			/> -->
+		<property name="squareSide" value="4" />
+
+
+	</bean>
+	<bean id="world" class="org.exreco.liff.core.World" scope="prototype">
+		<property name="caseInitializer" ref="segregatedReplicatorRegionsInitializer" />
+
+		<property name="earlyExit" value="true" />
+		<property name="maxLifeTime" value="2000" />
+		<property name="eveGene" ref="eveGene" />
+		<property name="space" ref="hoppingReplicatorSpace"/>
+
+
+	</bean>
+</beans>
