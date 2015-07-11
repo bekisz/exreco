@@ -190,10 +190,11 @@
 				<version>2.4</version>
 				<configuration>
 					<archive>
+						<!-- use command line to configure classpath for config files 
 						<manifestEntries>
 							<Class-Path>config/</Class-Path>
 						</manifestEntries>
-	
+						-->
 						<manifest>
 							<addClasspath>true</addClasspath>
 							<mainClass>org.exreco.experiment.gui.Liff</mainClass>

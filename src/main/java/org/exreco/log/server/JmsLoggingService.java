@@ -26,7 +26,7 @@ public class JmsLoggingService {
 			.getName());
 	private final LogEventSink logEventSink = new LogEventSink();
 
-	private static final String DEFAULT_CONFIG_FILE_NAME = "config/log4j2-jmsLoggingService.xml";
+	//private static final String DEFAULT_CONFIG_FILE_NAME = "config/log4j2-jmsLoggingService.xml";
 	private static final String DEFAULT_DESTINATION_NAME = "Log4j2Events";
 
 	public JmsLoggingService() {
@@ -117,6 +117,7 @@ public class JmsLoggingService {
 	}
 
 	public static void main(String[] args) throws Exception {
+		/*
 		String configFileName = DEFAULT_CONFIG_FILE_NAME;
 		if (args.length > 0) {
 			configFileName = args[0];
@@ -124,7 +125,7 @@ public class JmsLoggingService {
 		ConfigurationFactory
 				.setConfigurationFactory(new ServerConfigurationFactory(
 						configFileName));
-
+			*/
 		JmsLoggingService service = new JmsLoggingService();
 		service.accept();
 

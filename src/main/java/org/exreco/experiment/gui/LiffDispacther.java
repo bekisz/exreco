@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import org.apache.logging.log4j.core.LifeCycle;
-import org.exreco.experiment.Experiment;
+import org.exreco.experiment.Exreco;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -22,7 +22,7 @@ public class LiffDispacther {
 			logger.debug("Running experiment");
 
 			context = new ClassPathXmlApplicationContext("experiment-beans.xml");
-			Experiment experiment= (Experiment) context.getBean("experiment");
+			Exreco experiment= (Exreco) context.getBean("experiment");
 
 			logger.debug("Experiment initialised.");
 			experiment.run();

@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LifeCycle;
-import org.exreco.experiment.Experiment;
+import org.exreco.experiment.Exreco;
 
 import org.exreco.experiment.util.LiffUtils;
 import org.springframework.context.ApplicationContext;
@@ -21,8 +21,8 @@ public class Liff {
 
 			ThreadContext.put("pid", LiffUtils.getProcessId());
 			logger.debug("Running experiment");
-			context = new ClassPathXmlApplicationContext("experiment-beans.xml");
-			Experiment experiment= (Experiment) context.getBean("experiment");
+			context = new ClassPathXmlApplicationContext("exreco-beans.xml");
+			Exreco experiment= (Exreco) context.getBean("exreco");
 			
 
 			logger.debug("Experiment initialised.");
