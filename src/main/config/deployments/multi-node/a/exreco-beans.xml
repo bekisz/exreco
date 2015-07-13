@@ -6,28 +6,28 @@
 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	<import resource="experiment-beans.xml"/>
 	<import resource="logger-beans.xml"/>
-	<!-- 
-	<bean id="gridExecutorService" class="org.exreco.experiment.jppf.MultiNodeExecutorService">
+	
+	<bean id="multiNodeExecutorService" class="org.exreco.experiment.jppf.MultiNodeExecutorService">
 		<property name="batchSize" value="20" />
 		<property name="batchTimeout" value="20000" />
 	</bean>
-
+<!-- 
 	<bean id="sameThreadExecutorService" class="org.exreco.experiment.util.SameThreadExecutorService" />
--->
+
 	<bean id="multiThreadExecutorService" class="org.exreco.experiment.util.MultiThreadExecutorService">
 		<property name="corePoolSize" value="4" />
 	</bean>
-
+-->
 
 	<bean id="exreco" class="org.exreco.experiment.Exreco"
 		init-method="init">
 		<property name="tableLoggers" ref="tableLoggers" />
 		<property name="executor">
-			<ref local="multiThreadExecutorService" />
+			<ref local="multiNodeExecutorService" />
 		</property>
 		<property name="eventTopicHome">
-			<bean class="org.exreco.experiment.util.events.LocalEventTopicHome" />
-			<!--  <bean class="org.exreco.experiment.jms.JmsEventTopicHome"/>    -->
+			<!-- <bean class="org.exreco.experiment.util.events.LocalEventTopicHome" />--> 
+			  <bean class="org.exreco.experiment.jms.JmsEventTopicHome"/>    
 		</property>
 		<property name="experiment">
 			<ref bean="experiment" />

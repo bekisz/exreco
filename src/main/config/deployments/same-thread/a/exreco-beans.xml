@@ -11,19 +11,20 @@
 		<property name="batchSize" value="20" />
 		<property name="batchTimeout" value="20000" />
 	</bean>
-
-	<bean id="sameThreadExecutorService" class="org.exreco.experiment.util.SameThreadExecutorService" />
--->
-	<bean id="multiThreadExecutorService" class="org.exreco.experiment.util.MultiThreadExecutorService">
+		<bean id="multiThreadExecutorService" class="org.exreco.experiment.util.MultiThreadExecutorService">
 		<property name="corePoolSize" value="4" />
 	</bean>
+  -->
+	<bean id="sameThreadExecutorService" class="org.exreco.experiment.util.SameThreadExecutorService" />
+
+
 
 
 	<bean id="exreco" class="org.exreco.experiment.Exreco"
 		init-method="init">
 		<property name="tableLoggers" ref="tableLoggers" />
 		<property name="executor">
-			<ref local="multiThreadExecutorService" />
+			<ref local="sameThreadExecutorService" />
 		</property>
 		<property name="eventTopicHome">
 			<bean class="org.exreco.experiment.util.events.LocalEventTopicHome" />

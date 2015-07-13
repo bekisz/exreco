@@ -166,14 +166,17 @@ public class Exreco {
 		// this.getExperimentEventHub().getListeners()
 		// .add(new RmiExperimentTrackerAdapter(this.getCaseTracker()));
 
+			// CaseStatus Events Topic ->  ExperimentTracker
 		this.getEventTopicHome().getEventSource(caseStatusTopicName)
 				.getListeners().add(this.experimentTrackerImpl);
 
+			//  ExperimentEventHub ->  CaseStatus Events Topic
 		this.getExperimentEventHub()
 				.getListeners()
 				.add(this.getEventTopicHome().getEventListener(
 						caseStatusTopicName));
 
+		//  ExperimentEventHub ->  ExperimentStatus Events Topic
 		this.experimentTrackerImpl
 				.getEventSource()
 				.getListeners()
@@ -205,6 +208,8 @@ public class Exreco {
 //			}
 //
 //		}
+		
+		//  User Command Event ->  UserCommandListener
 		this.getEventTopicHome().getEventSource(userCommandTopicName)
 				.getListeners().add(new UserCommandListener());
 	}
@@ -228,7 +233,7 @@ public class Exreco {
 
 		//ExperimentXmlNode.CaseIterator it = this.getCaseIterator();
 		
-		Experiment it = this.getExperiment();
+		Experiment experiment = this.getExperiment();
 		// this.getExperimentEventHub().fireEvent(new ExperimentStarted());
 		// Case.getEventSource().getListeners().add(this.getExperimentEventHub());
 		// LiffEventListener<LiffEvent> caseTrackerListener = new
@@ -237,6 +242,10 @@ public class Exreco {
 		// LiffEvent2JmsEventAdapter liffEvent2JmsEventAdapter = new
 		// LiffEvent2JmsEventAdapter(
 		// "LiffCaseStatus");
+		
+		// CaseShellIf Events-> Two-way -> BlockingEventFloodFilter 
+		//	-> To.StatusEvent Converter -> caseStatusEvent Topic
+	
 		LiffEventListener<LiffEvent> liffEventListener = this.getEventTopicHome()
 				.getEventListener(caseStatusTopicName);
 
@@ -247,7 +256,7 @@ public class Exreco {
 		LiffEventListener<LiffEvent> twoWayEventListenerProxy = new ExperimentTwoWayEventListenerProxy(
 				toStatusEventConverter, delayEventFloodFilter);
 
-		while (it.hasNext() && !this.toExit) {
+		while (experiment.hasNext() && !this.toExit) {
 
 			while (this.paused.get()) {
 				Exreco.this.pauseLock.lock();
@@ -255,7 +264,7 @@ public class Exreco {
 				Exreco.this.pauseLock.unlock();
 			}
 
-			CaseShellIf runableCase = it.next();
+			CaseShellIf runableCase = experiment.next();
 			//DimensionSetPoint point = runableCase.getDimensionSetPoint();
 			//runableCase.setExperimentTracker(this.getExperimentTracker());
 			runableCase.setExperimentId(this.getExperimentTracker().getExperimentId());
@@ -266,9 +275,11 @@ public class Exreco {
 
 			ThreadContext.put("case-id",
 					String.valueOf(runableCase.getCaseId()));
-
+			// CaseShellIf Events -> Tableloggers
 			runableCase.getEventSource().getListeners()
 					.add(this.getTableLoggers());
+
+			// CaseShellIf Events -> CaseStatus Topic
 
 			runableCase.getEventSource().getListeners()
 					.add(twoWayEventListenerProxy);
