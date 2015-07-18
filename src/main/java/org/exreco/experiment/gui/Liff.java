@@ -1,5 +1,8 @@
 package org.exreco.experiment.gui;
 
+import java.io.File;
+import java.util.Map;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
@@ -21,6 +24,20 @@ public class Liff {
 
 			ThreadContext.put("pid", LiffUtils.getProcessId());
 			logger.debug("Running experiment");
+			
+	        Map<String, String> env = System.getenv();
+	        if (env.containsKey("ACTIVEMQ_HOME")) {
+	        	String activeMqHome = env.get("ACTIVEMQ_HOME");
+	        	System.setProperty("activemq.home", activeMqHome);
+	        	String activeMqConfig  =activeMqHome + File.separatorChar + "conf";
+	        	System.setProperty("activemq.conf", activeMqConfig);
+	        	logger.debug("ActiveMQ Config dir is " + activeMqConfig);
+	        }
+	        for (String envName : env.keySet()) {
+	            System.out.format("%s=%s%n",
+	                              envName,
+	                              env.get(envName));
+	        }
 			context = new ClassPathXmlApplicationContext("exreco-beans.xml");
 			Exreco experiment= (Exreco) context.getBean("exreco");
 			
