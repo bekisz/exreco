@@ -24,6 +24,7 @@ public interface CaseIf extends Runnable {
 	public EventSource<LiffEvent> getEventSource();
 	public void setThreadName(String name);
 	public String getThreadName();
+
 	void run();
 
 

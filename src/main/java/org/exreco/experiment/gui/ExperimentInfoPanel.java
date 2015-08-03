@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.exreco.experiment.CaseStatusEvent;
-import org.exreco.experiment.ExperimentTrackerImpl;
+import org.exreco.experiment.Experiment;
 import org.exreco.experiment.dim.Dimension;
 import org.exreco.experiment.util.Time;
 import org.exreco.experiment.util.events.LiffEvent;
@@ -212,8 +212,8 @@ public class ExperimentInfoPanel extends javax.swing.JPanel implements
 
 	@Override
 	public void eventOccurred(LiffEvent event) throws Exception {
-		if (event instanceof ExperimentTrackerImpl.ExperimentStatusEvent) {
-			ExperimentTrackerImpl.ExperimentStatusEvent expStatEvent = (ExperimentTrackerImpl.ExperimentStatusEvent) event;
+		if (event instanceof Experiment.ExperimentStatusEvent) {
+			Experiment.ExperimentStatusEvent expStatEvent = (Experiment.ExperimentStatusEvent) event;
 			String str = " - ";
 			int i = 0;
 			// dimensions names
@@ -285,13 +285,13 @@ public class ExperimentInfoPanel extends javax.swing.JPanel implements
 			}
 			// expected total run time
 			str = " - ";
-			if (expStatEvent.getLifeCycleState() == ExperimentTrackerImpl.LifeCycleState.RUNNING) {
+			if (expStatEvent.getLifeCycleState() == Experiment.LifeCycleState.RUNNING) {
 				Time totalRunTime;
 				totalRunTime = new Time((new java.util.Date()).getTime()
 						- expStatEvent.getStartDate().getTime()
 						+ remainingTime.getMilliseconds());
 				str = totalRunTime.toString();
-			} else if (expStatEvent.getLifeCycleState() == ExperimentTrackerImpl.LifeCycleState.ENDED) {
+			} else if (expStatEvent.getLifeCycleState() == Experiment.LifeCycleState.ENDED) {
 				Time totalRunTime;
 				long duration = expStatEvent.getFinishDate().getTime()
 						- expStatEvent.getStartDate().getTime();
@@ -334,21 +334,21 @@ public class ExperimentInfoPanel extends javax.swing.JPanel implements
 			i++;
 			// state
 			str = "Unknown";
-			if (expStatEvent.getLifeCycleState() == ExperimentTrackerImpl.LifeCycleState.RUNNING) {
+			if (expStatEvent.getLifeCycleState() == Experiment.LifeCycleState.RUNNING) {
 				str = "Running";
-			} else if (expStatEvent.getLifeCycleState() == ExperimentTrackerImpl.LifeCycleState.ENDED) {
+			} else if (expStatEvent.getLifeCycleState() == Experiment.LifeCycleState.ENDED) {
 
 				str = "Ended";
-			} else if (expStatEvent.getLifeCycleState() == ExperimentTrackerImpl.LifeCycleState.STARTED) {
+			} else if (expStatEvent.getLifeCycleState() == Experiment.LifeCycleState.STARTED) {
 
 				str = "Started";
-			} else if (expStatEvent.getLifeCycleState() == ExperimentTrackerImpl.LifeCycleState.CANCELLED) {
+			} else if (expStatEvent.getLifeCycleState() == Experiment.LifeCycleState.CANCELLED) {
 
 				str = "Cancelled";
-			} else if (expStatEvent.getLifeCycleState() == ExperimentTrackerImpl.LifeCycleState.INITED) {
+			} else if (expStatEvent.getLifeCycleState() == Experiment.LifeCycleState.INITED) {
 
 				str = "Inited";
-			} else if (expStatEvent.getLifeCycleState() == ExperimentTrackerImpl.LifeCycleState.CREATED) {
+			} else if (expStatEvent.getLifeCycleState() == Experiment.LifeCycleState.CREATED) {
 
 				str = "Created";
 			}

@@ -17,8 +17,9 @@ import javax.swing.JScrollPane;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.exreco.experiment.Experiment;
 import org.exreco.experiment.ExperimentTracker;
-import org.exreco.experiment.ExperimentTrackerImpl;
+import org.exreco.experiment.Experiment;
 import org.exreco.experiment.event.PatientExitCommand;
 import org.exreco.experiment.event.PatientPauseCommand;
 import org.exreco.experiment.event.StartCommand;
@@ -169,7 +170,7 @@ public class ExperimentTab extends JComponent implements ActionListener,
 
 	/*
 	 * private void updateInfoLabels(
-	 * ExperimentTrackerImpl.ExperimentStatusEvent experimentStatusEvent) throws
+	 * Experiment.ExperimentStatusEvent experimentStatusEvent) throws
 	 * Exception { StringBuffer sb = new StringBuffer(100); int i = 0;
 	 * sb.append("Experiment space : ");
 	 * sb.append(experimentStatusEvent.getDimensionSet().toString());
@@ -223,7 +224,7 @@ public class ExperimentTab extends JComponent implements ActionListener,
 	}
 
 	private void updateProgressBars(
-			ExperimentTrackerImpl.ExperimentStatusEvent experimentStatusEvent)
+			Experiment.ExperimentStatusEvent experimentStatusEvent)
 			throws Exception {
 
 		int actualValue = (int) experimentStatusEvent.getTicksEnded();
@@ -231,7 +232,7 @@ public class ExperimentTab extends JComponent implements ActionListener,
 
 		this.getExperimentProgressBar().getModel().setMaximum(maxValue);
 		this.getExperimentProgressBar().getModel().setValue(actualValue);
-		if (experimentStatusEvent.getLifeCycleState() == ExperimentTrackerImpl.LifeCycleState.ENDED) {
+		if (experimentStatusEvent.getLifeCycleState() == Experiment.LifeCycleState.ENDED) {
 			this.getExperimentProgressBar().setBackground(Color.GREEN);
 		}
 
@@ -272,8 +273,8 @@ public class ExperimentTab extends JComponent implements ActionListener,
 	public void eventOccurred(LiffEvent liffEvent) throws Exception {
 
 		try {
-			if (liffEvent instanceof ExperimentTrackerImpl.ExperimentStatusEvent) {
-				ExperimentTrackerImpl.ExperimentStatusEvent experimentStatusEvent = (ExperimentTrackerImpl.ExperimentStatusEvent) liffEvent;
+			if (liffEvent instanceof Experiment.ExperimentStatusEvent) {
+				Experiment.ExperimentStatusEvent experimentStatusEvent = (Experiment.ExperimentStatusEvent) liffEvent;
 
 				// this.updateRemainingTime(experimentStatusEvent);
 				this.getExperimentInfoPanel().eventOccurred(liffEvent);

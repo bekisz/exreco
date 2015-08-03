@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.exreco.experiment.Experiment;
 import org.exreco.experiment.Exreco;
 
 import org.exreco.experiment.util.events.LiffEvent;
@@ -91,7 +92,7 @@ public class TableLogger implements LiffEventListener<LiffEvent>, Serializable {
 	public void eventOccurred(LiffEvent event) throws Exception {
 		this.getEventMap().eventOccurred(event);
 
-		if (event instanceof Exreco.ExperimentEnded) {
+		if (event instanceof Experiment.ExperimentEnded) {
 			this.finish();
 		}
 	}

@@ -17,8 +17,8 @@ import javax.swing.JProgressBar;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.exreco.experiment.CaseStatusEvent;
+import org.exreco.experiment.Experiment;
 import org.exreco.experiment.ExperimentTracker;
-import org.exreco.experiment.ExperimentTrackerImpl;
 import org.exreco.experiment.Case.LifeCycleState;
 import org.exreco.experiment.util.events.LiffEvent;
 import org.exreco.experiment.util.events.LiffEventListener;
@@ -266,8 +266,8 @@ public class ThreadsPanel extends javax.swing.JPanel implements
 	@Override
 	public void eventOccurred(LiffEvent liffEvent) {
 		try {
-			if (liffEvent instanceof ExperimentTrackerImpl.ExperimentStatusEvent) {
-				ExperimentTrackerImpl.ExperimentStatusEvent experimentStatusEvent = (ExperimentTrackerImpl.ExperimentStatusEvent) liffEvent;
+			if (liffEvent instanceof Experiment.ExperimentStatusEvent) {
+				Experiment.ExperimentStatusEvent experimentStatusEvent = (Experiment.ExperimentStatusEvent) liffEvent;
 				Map<String, CaseStatusEvent> statusThreadPoolMap = experimentStatusEvent
 						.getThreadPool2CaseStatusMap();
 				for (CaseStatusEvent caseStatus : statusThreadPoolMap.values()) {

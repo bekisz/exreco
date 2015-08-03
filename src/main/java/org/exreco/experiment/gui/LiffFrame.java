@@ -15,7 +15,8 @@ import javax.swing.JTabbedPane;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.exreco.experiment.ExperimentTrackerImpl;
+import org.exreco.experiment.Experiment;
+
 import org.exreco.experiment.util.events.EventHub;
 import org.exreco.experiment.util.events.EventTopicHome;
 import org.exreco.experiment.util.events.LiffEvent;
@@ -77,8 +78,8 @@ public class LiffFrame extends JFrame implements ActionListener,
 	public void eventOccurred(LiffEvent liffEvent) throws Exception {
 
 		try {
-			if (liffEvent instanceof ExperimentTrackerImpl.ExperimentStatusEvent) {
-				ExperimentTrackerImpl.ExperimentStatusEvent experimentStatusEvent = (ExperimentTrackerImpl.ExperimentStatusEvent) liffEvent;
+			if (liffEvent instanceof Experiment.ExperimentStatusEvent) {
+				Experiment.ExperimentStatusEvent experimentStatusEvent = (Experiment.ExperimentStatusEvent) liffEvent;
 				long experimentId = experimentStatusEvent.getExperimentId();
 				if (!this.getTabs().containsKey(experimentId)) {
 					ExperimentTab newTab = new ExperimentTab(experimentId);

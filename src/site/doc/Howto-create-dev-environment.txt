@@ -1,2 +1,19 @@
 Download Eclipse 
 	http://www.eclipse.org/downloads/
+	Create New Workspace like C:\Dev\workspace-exreco-mars
+	Set -DLog4jContextSelector=org.apache.logging.log4j.core.selector.BasicContextSelector
+	
+Git
+		https://windows.github.com/
+
+	
+Set up multi-node deployment mode
+
+ActiveMQ
+
+JPPF		
+Set jppf-node.properties
+			In $JPPF_HOME/JPPF-5.0.1/config/jppf-node.properties 
+			jppf.jvm.options =  .... -DLog4jContextSelector=org.apache.logging.log4j.core.selector.BasicContextSelector
+
+		
