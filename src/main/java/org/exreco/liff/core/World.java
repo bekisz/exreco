@@ -278,10 +278,10 @@ public class World extends Case implements AgeTracked, Runnable,
 
 			logger.debug("World finished.");
 
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			logger.debug("Exception while running case #" + this.getCaseId()
 					+ " : ", e);
-
+			throw new RuntimeException(e);
 		}
 
 	}

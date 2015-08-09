@@ -5,6 +5,8 @@ import java.util.Set;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import javax.management.RuntimeErrorException;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.exreco.experiment.log.DynamicClassHibernateHelper;
@@ -22,46 +24,50 @@ public class HibernateUtil {
 	private static ReadWriteLock rebuildLock = new ReentrantReadWriteLock();
 	private static Set<Class<Object>> annotatedDynamicClasses = new HashSet<Class<Object>>();
 
-	private static Logger logger = LogManager.getLogger(HibernateUtil.class
-			.getName());
+	private static Logger logger = LogManager.getLogger(HibernateUtil.class.getName());
 
 	synchronized static private void buildSessionFactory() {
 		try {
 			// Configuration configuration = new Configuration();
 			configuration.configure();
-			serviceRegistry = new ServiceRegistryBuilder().applySettings(
-					configuration.getProperties()).buildServiceRegistry();
+			serviceRegistry = new ServiceRegistryBuilder().applySettings(configuration.getProperties())
+					.buildServiceRegistry();
 			sessionFactory = configuration.buildSessionFactory(serviceRegistry);
 			// logger.debug("Hibernate SessionFactory created");
-		} catch (Throwable ex) {
+		} catch (Exception ex) {
 			// Make sure you log the exception, as it might be swallowed
-			logger.error("SessionFactory creation failed.", ex);
-			logger.error(ex.getMessage());
-			throw new ExceptionInInitializerError(ex);
+			logger.error("Hibernate SessionFactory creation failed.", ex);
+			// logger.error(ex.getMessage());
+			// throw new ExceptionInInitializerError(ex);
+
 		}
 	}
 
 	synchronized public static void rebuildSessionFactory() {
-
 		rebuildLock.writeLock().lock();
-		getSessionFactory().close();
-		buildSessionFactory();
-		rebuildLock.writeLock().unlock();
 
+		try {
+			getSessionFactory().close();
+			buildSessionFactory();
+		} finally {
+			rebuildLock.writeLock().unlock();
+		}
 	}
 
-	synchronized public static void rebuildSessionFactory(
-			Class<Object> dynamicClazz) {
+	synchronized public static void rebuildSessionFactory(Class<Object> dynamicClazz) {
 		getAnnotatedDynamicClasses().add(dynamicClazz);
-		rebuildLock.writeLock().lock();
-		getSessionFactory().close();
-		HibernateUtil.configuration = new Configuration();
-		for (Class<Object> annotedDynamicClazz : getAnnotatedDynamicClasses()) {
-			HibernateUtil.getConfiguration().addAnnotatedClass(annotedDynamicClazz);
-		}
+		try {
+			rebuildLock.writeLock().lock();
+			getSessionFactory().close();
+			HibernateUtil.configuration = new Configuration();
+			for (Class<Object> annotedDynamicClazz : getAnnotatedDynamicClasses()) {
+				HibernateUtil.getConfiguration().addAnnotatedClass(annotedDynamicClazz);
+			}
 
-		buildSessionFactory();
-		rebuildLock.writeLock().unlock();
+			buildSessionFactory();
+		} finally {
+			rebuildLock.writeLock().unlock();
+		}
 
 	}
 
@@ -85,27 +91,31 @@ public class HibernateUtil {
 	static public void persist(Object object) {
 
 		HibernateUtil.rebuildLock.readLock().lock();
+		try {
+			Session session = HibernateUtil.getSessionFactory().openSession();
+			session.beginTransaction();
 
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		session.beginTransaction();
-
-		session.persist(object);
-		session.getTransaction().commit();
-		session.close();
-		HibernateUtil.rebuildLock.readLock().unlock();
-
+			session.persist(object);
+			session.getTransaction().commit();
+			session.close();
+		} finally {
+			HibernateUtil.rebuildLock.readLock().unlock();
+		}
 	}
 
 	static public void saveOrUpdate(Object object) {
 
 		HibernateUtil.rebuildLock.readLock().lock();
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		session.beginTransaction();
+		try {
+			Session session = HibernateUtil.getSessionFactory().openSession();
+			session.beginTransaction();
 
-		session.saveOrUpdate(object);
-		session.getTransaction().commit();
-		session.close();
-		HibernateUtil.rebuildLock.readLock().unlock();
+			session.saveOrUpdate(object);
+			session.getTransaction().commit();
+			session.close();
+		} finally {
+			HibernateUtil.rebuildLock.readLock().unlock();
+		}
 
 	}
 

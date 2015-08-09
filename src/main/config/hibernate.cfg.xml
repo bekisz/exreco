@@ -6,7 +6,7 @@
 	<session-factory>
 		<property name="hibernate.bytecode.use_reflection_optimizer">false</property>
 		<property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-		<property name="hibernate.connection.url">jdbc:mysql://192.168.1.103/exreco</property>
+		<property name="hibernate.connection.url">jdbc:mysql://localhost/exreco</property>
 		<property name="hibernate.connection.username">exreco</property>
 		<property name="hibernate.connection.password">liff</property>
 		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>

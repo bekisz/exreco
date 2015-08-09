@@ -82,7 +82,7 @@ public class Exreco {
 	}
 
 	static public void wire(EventSource<LiffEvent> from, LiffEventListener<LiffEvent> to) {
-		from.getListeners().add(to);
+		from.wireTo(to);
 	}
 	
 	protected void wireEvents() throws Exception {
@@ -132,7 +132,7 @@ public class Exreco {
 		
 		//  User Command Event ->  UserCommandListener
 		this.getDeployment().getEventTopicHome().getEventSource(Experiment.userCommandTopicName)
-				.getListeners().add(this.getExperiment().new UserCommandListener());
+				.wireTo(this.getExperiment().new UserCommandListener());
 	}
 
 
@@ -154,7 +154,7 @@ public class Exreco {
 		
 		// CaseShellIf Events-> Two-way -> BlockingEventFloodFilter 
 		//	-> To.StatusEvent Converter -> caseStatusEvent Topic
-	
+		/*
 		LiffEventListener<LiffEvent> liffEventListener = this.getDeployment().getEventTopicHome()
 				.getEventListener(Experiment.caseStatusTopicName);
 
@@ -164,15 +164,16 @@ public class Exreco {
 				toStatusEventConverter, 50);
 		LiffEventListener<LiffEvent> twoWayEventListenerProxy = new ExperimentTwoWayEventListenerProxy(
 				toStatusEventConverter, delayEventFloodFilter);
-
+		*/
 		this.getExperiment().run();
 		
 		ThreadContext.put("case-id", "");
-
-		this.getDeployment().getExecutor().awaitTermination(Long.MAX_VALUE,
-				TimeUnit.MILLISECONDS);
 		this.getDeployment().getExecutor().shutdown();
 		logger.debug("Awaiting termination...");
+		this.getDeployment().getExecutor().awaitTermination(Long.MAX_VALUE,
+				TimeUnit.MILLISECONDS);
+
+		logger.debug("Finishing exreco...");
 
 		// Case.getEventSource().getListeners()
 		// .remove(this.getExperimentEventHub());
@@ -183,7 +184,7 @@ public class Exreco {
 	protected void finish() throws Exception {
 
 		// this.getExperimentEventHub().fireEvent(new ExperimentEnded());
-		this.getExperiment().getExperimentEventHub().getListeners().clear();
+		this.getExperiment().getExperimentEventHub().unwireAll();
 
 		HibernateUtil.getSessionFactory().close();
 

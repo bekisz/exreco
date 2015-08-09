@@ -5,6 +5,7 @@ Download Eclipse
 	
 Git
 		https://windows.github.com/
+		
 
 	
 Set up multi-node deployment mode
@@ -16,4 +17,11 @@ Set jppf-node.properties
 			In $JPPF_HOME/JPPF-5.0.1/config/jppf-node.properties 
 			jppf.jvm.options =  .... -DLog4jContextSelector=org.apache.logging.log4j.core.selector.BasicContextSelector
 
+
+MySQL
+	Create user : 
+	user : exreco
+	pwd :  liff
+	
+	CREATE SCHEMA `exreco` ;
 		

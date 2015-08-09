@@ -33,16 +33,15 @@
 		lazy-init="true" />
 	<bean id="jmsEventTopicHome" class="org.exreco.experiment.jms.JmsEventTopicHome"
 		lazy-init="true" />
-		
+	<alias name="localEventTopicHome" alias="eventTopicHome"/>
 	<!-- -->	
 	<bean id="deployment" class="org.exreco.experiment.Deployment"
 		lazy-init="true" init-method="init">
 		<property name="executor">
 			<ref local="multiThreadExecutorService" />
 		</property>
-		<property name="eventTopicHome">
-			<ref local="localEventTopicHome" />
-		</property>
+		<property name="eventTopicHome" ref="eventTopicHome" />
+		
 		<property name="log4j2ConfigLocation" value="log4j2-single-node.xml" />
 		
 		

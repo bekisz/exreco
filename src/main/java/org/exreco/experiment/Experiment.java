@@ -66,7 +66,7 @@ public class Experiment
 	private boolean toExit = false;
 	transient private final ReentrantLock pauseLock = new ReentrantLock();
 	transient private final Condition pauseCondition = pauseLock.newCondition();
-
+	private final ReentrantLock nextCaseLock = new ReentrantLock(); 
 	private Deployment deployment;
 	private ExperimentTracker experimentTracker;
 
@@ -137,6 +137,7 @@ public class Experiment
 		final private long broadcastIntervalsInMs;
 
 		public StatusBroadcasterThread(long broadcastIntervalsInMs) {
+			super("Experiment Status Broadcaster");
 			this.broadcastIntervalsInMs = broadcastIntervalsInMs;
 		}
 
@@ -160,6 +161,8 @@ public class Experiment
 	}
 
 	public class Speedometer extends Thread {
+	
+
 		final private long measurementInterval;
 
 		/**
@@ -168,6 +171,7 @@ public class Experiment
 		 *            Measured in every x milliseconds
 		 */
 		public Speedometer(long measurementInterval) {
+			super("Experiment Speedometer");
 			this.measurementInterval = measurementInterval;
 		}
 
@@ -207,6 +211,8 @@ public class Experiment
 
 	@Entity(name = "experiment")
 	public static class ExperimentStatusEvent extends LiffEvent implements Serializable {
+
+
 
 		/**
 		 * 
@@ -531,20 +537,27 @@ public class Experiment
 	}
 
 	@Override
-	synchronized public CaseShellIf next() {
+	public CaseShellIf next() {
 
+		this.getNextCaseLock().lock();
 		boolean couldIncrease = this.getActualDimensionSetPoint().increase();
-
+		DimensionSetPoint clonedPoint = this.getActualDimensionSetPoint().clone();
 		if (!couldIncrease) {
 			logger.warn("No next case available. Returning null.");
 			return null;
 		}
-		CaseShellIf caseIf = new CaseShell(this.getWorldBeansXml(), "world");
-		DimensionSetPoint clonedPoint = this.getActualDimensionSetPoint().clone();
-		caseIf.setDimensionSetPoint(clonedPoint);
-		caseIf.setCaseId(this.getActualCaseId());
-		caseIf.setLog4j2ConfigLocation(this.getDeployment().getLog4j2ConfigLocation());
+		int actualCaseId = this.getActualCaseId();
 		this.actualCaseId++;
+		this.getNextCaseLock().unlock();
+		
+		
+		CaseShellIf caseIf = new CaseShell(this.getWorldBeansXml(), "world");
+	
+		caseIf.setCaseId(actualCaseId);
+
+		caseIf.setDimensionSetPoint(clonedPoint);
+		caseIf.setLog4j2ConfigLocation(this.getDeployment().getLog4j2ConfigLocation());
+
 		return caseIf;
 	}
 
@@ -635,11 +648,11 @@ public class Experiment
 
 			ThreadContext.put("case-id", String.valueOf(runableCase.getCaseId()));
 			// CaseShellIf Events -> Tableloggers
-			runableCase.getEventSource().getListeners().add(this.getTableLoggers());
-
+			runableCase.getEventSource().wireTo(this.getTableLoggers());
+			
 			// CaseShellIf Events -> CaseStatus Topic
 
-			runableCase.getEventSource().getListeners().add(twoWayEventListenerProxy);
+			runableCase.getEventSource().wireTo(twoWayEventListenerProxy);
 
 			// logger.debug("Case started with dimension : {}", runableCase
 			// .getDimensionSetpoint().toString());
@@ -721,7 +734,8 @@ public class Experiment
 				HibernateUtil.saveOrUpdate(dynamicDimensionSetpoint);
 			} catch (Exception e) {
 				Case.logger.error("Could not create dynamic dimension set point. ", e);
-
+				//System.err.println("Could not create dynamic dimension set point. ");
+				throw e;
 			}
 
 		} else if (status.getLifeCycleState() == Case.LifeCycleState.ENDED) {
@@ -911,12 +925,12 @@ public class Experiment
 
 	@Override
 	public void addListener(RemoteLiffEventListener listener) throws Exception {
-		this.getEventSource().getListeners().add(listener);
+		this.getEventSource().wireTo(listener);
 	}
 
 	@Override
 	public void removeListener(RemoteLiffEventListener listener) throws Exception {
-		this.getEventSource().getListeners().remove(listener);
+		this.getEventSource().wireTo(listener);
 	}
 
 	@Override
@@ -1138,6 +1152,10 @@ public class Experiment
 
 	public void setVersion(String version) {
 		this.version = version;
+	}
+
+	public ReentrantLock getNextCaseLock() {
+		return nextCaseLock;
 	}
 
 }

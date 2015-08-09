@@ -105,7 +105,7 @@ public class CaseShell implements CaseShellIf, Serializable {
 		String threadName = Thread.currentThread().getName();
 		caseIf.setThreadName(threadName);
 		this.setThreadName(threadName);
-		caseIf.getEventSource().getListeners().addAll(this.getEventSource().getListeners());
+		caseIf.getEventSource().wireTo(this.getEventSource().getListeners());
 		// TODO Maybe it is needed :
 		// this.getEventSource().getListeners().clear();
 		this.insertDimensionSetPoint();
@@ -138,7 +138,8 @@ public class CaseShell implements CaseShellIf, Serializable {
 			 */
 			this.getProxiedCase().run();
 			logger.debug("Case run finished");
-		} catch (Exception e) {
+		} catch (Throwable e) {
+
 			logger.error("Error occured during case exectution", e);
 		} finally {
 			ThreadContext.clearAll();

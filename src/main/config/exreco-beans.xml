@@ -10,11 +10,22 @@
 		init-method="init">
 
 		<property name="deployment" ref="deployment" />
-		<property name="experiment" ref="experiment"/>
-			
+		<property name="experiment" ref="experiment" />
+
 	</bean>
-	<!-- <import resource="deployment-beans-multi-node.xml" />  -->
+	<!-- <import resource="deployment-beans-multi-node.xml" /> -->
 	<import resource="deployment-beans-single-node.xml" />
 	<import resource="experiments/aging/local-competition/alfa/experiment-beans.xml" />
 
+	<!-- Choose Gui to track the experiments. It can be deleted to run in non-UI mode -->
+	
+	<bean id="gui" class="org.exreco.experiment.gui.ExrecoGui"
+		depends-on="exreco" init-method="init">
+		<property name="eventTopicHome" ref="eventTopicHome" />
+		<property name="iconImageLocation" value="/3_cubes_64.png" />
+		<property name="preferredSizeX" value="750" />
+		<property name="preferredSizeY" value="520" />
+
+	</bean>
+	
 </beans>
