@@ -10,6 +10,7 @@ import javax.jms.ObjectMessage;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.Session;
 import javax.jms.TextMessage;
+import javax.management.RuntimeErrorException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -26,14 +27,14 @@ public class JmsLoggingService {
 			.getName());
 	private final LogEventSink logEventSink = new LogEventSink();
 
-	//private static final String DEFAULT_CONFIG_FILE_NAME = "config/log4j2-jmsLoggingService.xml";
+
 	private static final String DEFAULT_DESTINATION_NAME = "Log4j2Events";
 
 	public JmsLoggingService() {
 
 	}
 
-	protected void accept() {
+	protected void accept() throws NamingException, JMSException {
 		String destinationName = null;
 		Context jndiContext = null;
 		ConnectionFactory connectionFactory = null;
@@ -53,12 +54,13 @@ public class JmsLoggingService {
 		 * Create a JNDI API InitialContext object if none exists yet.
 		 */
 		ThreadContext.put("pid", LiffUtils.getProcessId());
+		System.out.println("________Starting {}..JmsLoggingService.class.getName()");
 		logger.debug("Starting {}...", JmsLoggingService.class.getName());
 		try {
 			jndiContext = new InitialContext();
 		} catch (NamingException e) {
 			logger.error("Could not create JNDI API context: " + e.toString());
-			System.exit(1);
+			throw e;
 		}
 
 		/*
@@ -70,7 +72,7 @@ public class JmsLoggingService {
 			destination = (Destination) jndiContext.lookup(destinationName);
 		} catch (NamingException e) {
 			logger.error("JNDI API lookup failed: " + e.toString());
-			System.exit(1);
+			throw e;
 		}
 
 		/*
@@ -98,6 +100,7 @@ public class JmsLoggingService {
 						LogEvent logEvent = (LogEvent) objectMessage
 								.getObject();
 						logEventSink.log(logEvent);
+						// System.err.println("Logging : " + logEvent.toString());
 					} else {
 						break;
 					}
@@ -105,6 +108,7 @@ public class JmsLoggingService {
 			}
 		} catch (JMSException e) {
 			logger.error("Exception occurred: " + e.toString());
+			throw e;
 		} finally {
 			if (connection != null) {
 				try {
@@ -117,19 +121,10 @@ public class JmsLoggingService {
 	}
 
 	public static void main(String[] args) throws Exception {
-		/*
-		String configFileName = DEFAULT_CONFIG_FILE_NAME;
-		if (args.length > 0) {
-			configFileName = args[0];
-		}
-		ConfigurationFactory
-				.setConfigurationFactory(new ServerConfigurationFactory(
-						configFileName));
-			*/
+
 		JmsLoggingService service = new JmsLoggingService();
 		service.accept();
 
-		// ((LoggerContext) LogManager.getContext()).reconfigure();
 
 	}
 

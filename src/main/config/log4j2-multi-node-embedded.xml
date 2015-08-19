@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" monitorInterval="10">
+
+	<appenders>
+
+
+
+		<File name="log-file" fileName="output/experiment.log" append="false">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} cid#%X{case-id} [%t] %-5level %class{1.}
+				%L
+				%M
+				%marker
+				-
+				%msg%xEx%n" />
+		</File>
+		<Console name="console" target="SYSTEM_OUT">
+			<!-- <filters> <DynamicThresholdFilter key="case-id" onMatch="ACCEPT" 
+				onMismatch="DENY"> <KeyValuePair key="1" value="DEBUG"/> <KeyValuePair key="2" 
+				value="DEBUG"/> <KeyValuePair key="10" value="DEBUG"/> <KeyValuePair key="25" 
+				value="DEBUG"/> </DynamicThresholdFilter> <MarkerFilter marker="SQL" onMatch="DENY" 
+				onMismatch="NEUTRAL"/> </filters> -->
+
+			<PatternLayout
+				pattern="M %d{HH:mm:ss.SSS} cid#%X{case-id} [%t] %-5level %class{1.}
+				%L
+				%M
+				%marker
+				-
+				%msg%xEx%n" />
+		</Console>
+
+		<JMSTopic name="liffLog4j2Events" topicBindingName="Log4j2Events"
+			factoryBindingName="QueueConnectionFactory" ignoreExceptions="false" />
+
+
+		<!-- Socket name="socket" protocol="TCP" host="localhost" port="8099" immediateFlush="true"> 
+			</Socket -->
+
+
+		<!--appenders> <JMSQueue queueBindingName="MyQueue" factoryBindingName="MyQueueConnectionFactory"/> 
+			</appenders> <Failover name="FailoverLiffLog4j2Events" primary="LiffLog4j2Events" 
+			ignoreExceptions="true"> <Failovers> <appenderRef ref="Console"/> <appender-ref 
+			ref="log-file"/> </Failovers> </Failover> -->
+		<Routing name="routingAppender">
+			<Routes pattern="$${ctx:ROUTINGKEY}">
+
+				<!-- This route is chosen if ThreadContext has value 'jmsLoggerService' 
+					for key ROUTINGKEY. -->
+				<Route key="jmsLoggerService" ref="log-file"> 
+					
+				</Route>
+
+				<!-- This route is chosen if ThreadContext has no value for key ROUTINGKEY. 
+					<Route key="$${ctx:ROUTINGKEY}"> <JMSTopic name="LiffLog4j2Events" topicBindingName="Log4j2Events" 
+					factoryBindingName="QueueConnectionFactory" ignoreExceptions="false" /> </Route> -->
+
+				<!-- This route is chosen if ThreadContext has a value for ROUTINGKEY 
+					(other than the value 'special' which had its own route above). The value 
+					dynamically determines the name of the log file. $${ctx:ROUTINGKEY} -->
+				<Route key="${ctx:ROUTINGKEY}" ref="liffLog4j2Events" />
+
+			</Routes>
+		</Routing>
+	</appenders>
+	<loggers>
+		<logger name="org.jppf" level="warn" additivity="true">
+			<!-- appender-ref ref="socket"/ -->
+			<!-- <appender-ref ref="console"/> <appender-ref ref="log-file"/> -->
+		</logger>
+		<logger name="org.apache.activemq" level="warn" additivity="true">
+			<!-- appender-ref ref="socket"/ -->
+			<!-- <appender-ref ref="console"/> <appender-ref ref="log-file"/> -->
+		</logger>
+		<logger name="org.exreco" level="debug" additivity="true">
+			<appender-ref ref="routingAppender" />
+			<!-- appender-ref ref="socket"/ -->
+			<!-- <appender-ref ref="log-file"/> -->
+
+			<!-- <appender-ref ref="Console"/> -->
+			<!-- <appender-ref ref="FailoverLiffLog4j2Queue"/> -->
+		</logger>
+
+		<logger name="org.springframework" level="warn" additivity="true">
+
+
+		</logger>
+
+		<root level="debug">
+			<!-- appender-ref ref="socket"/ -->
+			<appender-ref ref="routingAppender" />
+
+			<!--appender-ref ref="log-file"/ -->
+
+		</root>
+	</loggers>
+</configuration>

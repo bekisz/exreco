@@ -33,21 +33,15 @@ public class ExrecoLauncherTest {
 	public void tearDown() throws Exception {
 	}
 
+
 	@Test
 	public void singleNodeSmokeTest() {
 
 		ExrecoLauncher exrecoLauncher = new ExrecoLauncher();
 		exrecoLauncher.setExrecoBeansXmlFile("exreco-beans-single-node-smoke-test.xml");
 		exrecoLauncher.run();
-        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        final Configuration config = ctx.getConfiguration();
-        Appender appender = config.getAppender("unitTestAppender");
-        MemoryAppender memoryAppender = (MemoryAppender) appender;
-		logger.error("Blala");
-		int  errorLogSize = memoryAppender.getLoggedEvents().size();
-		System.out.println("Assertion test");
-		assertTrue("No errors were logged", errorLogSize == 0 );
-		//fail("Not yet implemented");
+		
+		ExrecoAssert.assertNoWarningOrMoreOccured();
 	}
 
 }
