@@ -1,5 +1,6 @@
 package org.exreco.experiment.jms;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,10 +15,10 @@ public class JmsEventTopicHome implements EventTopicHome {
 
 	private final Map<String, LiffEvent2JmsEventAdapter> topicInputMap = new HashMap<String, LiffEvent2JmsEventAdapter>();
 	private final Map<String, JmsMessageReceiver> jmsReceiverMap = new HashMap<String, JmsMessageReceiver>();
-	private final Map<String, EventHub<LiffEvent>> topicOutputMap = new HashMap<String, EventHub<LiffEvent>>();
+	private final Map<String, EventHub> topicOutputMap = new HashMap<String, EventHub>();
 
 	@Override
-	synchronized public LiffEventListener<LiffEvent> getEventListener(
+	synchronized public LiffEventListener getEventListener(
 			String topicName) throws Exception {
 		LiffEvent2JmsEventAdapter eventListener = this.getTopicInputMap().get(
 				topicName);
@@ -30,15 +31,15 @@ public class JmsEventTopicHome implements EventTopicHome {
 	}
 
 	@Override
-	synchronized public EventSource<LiffEvent> getEventSource(String topicName)
+	synchronized public EventSource getEventSource(String topicName)
 			throws Exception {
 
-		EventHub<LiffEvent> eventSource;
+		EventHub eventSource;
 
 		eventSource = this.getTopicOutputMap().get(topicName);
 
 		if (eventSource == null) {
-			eventSource = new EventHub<LiffEvent>();
+			eventSource = new EventHub();
 
 			JmsEvent2LiffEventAdapter jms2liffAdapter = new JmsEvent2LiffEventAdapter(
 					eventSource);
@@ -67,7 +68,7 @@ public class JmsEventTopicHome implements EventTopicHome {
 	/**
 	 * @return the topicOutputMap
 	 */
-	public Map<String, EventHub<LiffEvent>> getTopicOutputMap() {
+	public Map<String, EventHub> getTopicOutputMap() {
 		return topicOutputMap;
 	}
 

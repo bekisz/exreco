@@ -11,17 +11,17 @@ import org.exreco.experiment.util.events.LiffEvent;
 import org.exreco.experiment.util.events.LiffEventListener;
 
 
-public class JmsEventHub extends EventHub<LiffEvent> implements Serializable {
+public class JmsEventHub extends EventHub implements Serializable {
 	final private String destinationName;
 	final private JmsMessageReceiver jmsMessageReceiver;
-	final private LiffEventListener<LiffEvent> jmsAdapter;
+	final private LiffEventListener jmsAdapter;
 	private static Logger logger = LogManager.getLogger(JmsEventHub.class
 			.getName());
 
-	protected class PingPongFilter implements LiffEventListener<LiffEvent> {
+	protected class PingPongFilter implements LiffEventListener {
 
 		@Override
-		public void eventOccurred(LiffEvent event) throws Exception {
+		public void eventOccurred(Serializable event) throws Exception {
 			JmsEventHub.this.fireEvent(event);
 
 		}
@@ -44,7 +44,7 @@ public class JmsEventHub extends EventHub<LiffEvent> implements Serializable {
 	private static final long serialVersionUID = 5188941654679006825L;
 
 	@Override
-	public void eventOccurred(LiffEvent event) {
+	public void eventOccurred(Serializable event) {
 		try {
 			this.getJmsAdapter().eventOccurred(event);
 		} catch (Exception e) {
@@ -70,7 +70,7 @@ public class JmsEventHub extends EventHub<LiffEvent> implements Serializable {
 	/**
 	 * @return the jmsAdapter
 	 */
-	public LiffEventListener<LiffEvent> getJmsAdapter() {
+	public LiffEventListener getJmsAdapter() {
 		return jmsAdapter;
 	}
 }

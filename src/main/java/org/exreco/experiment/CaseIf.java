@@ -21,7 +21,7 @@ public interface CaseIf extends Runnable {
 	public void setExperimentId(long experimentId);
 
 
-	public EventSource<LiffEvent> getEventSource();
+	public EventSource getEventSource();
 	public void setThreadName(String name);
 	public String getThreadName();
 

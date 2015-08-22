@@ -11,7 +11,7 @@ import org.exreco.experiment.util.events.LiffEventListener;
 
 
 public class TableLoggers  implements
-		LiffEventListener<LiffEvent>, Serializable {
+		LiffEventListener, Serializable {
 
 	/**
 	 * 
@@ -48,7 +48,7 @@ public class TableLoggers  implements
 	}
 
 	@Override
-	public void eventOccurred(LiffEvent event) throws Exception {
+	public void eventOccurred(Serializable event) throws Exception {
 		for (TableLogger logger : this.getTableLoggerMap().values()) {
 			logger.eventOccurred(event);
 		}

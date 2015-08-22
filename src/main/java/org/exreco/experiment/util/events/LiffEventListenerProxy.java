@@ -2,15 +2,15 @@ package org.exreco.experiment.util.events;
 
 import java.io.Serializable;
 
-public class LiffEventListenerProxy<EventType> implements
-		LiffEventListener<EventType>,Serializable {
+public class LiffEventListenerProxy implements
+		LiffEventListener,Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 4432810300093943384L;
-	final private LiffEventListener<EventType> proxied;
+	final private LiffEventListener proxied;
 
-	public LiffEventListenerProxy(LiffEventListener<EventType> proxied) {
+	public LiffEventListenerProxy(LiffEventListener proxied) {
 		super();
 		this.proxied = proxied;
 	}
@@ -21,7 +21,7 @@ public class LiffEventListenerProxy<EventType> implements
 	}
 
 	//@Override
-	public void eventOccurred(EventType event) throws Exception {
+	public void eventOccurred(Serializable event) throws Exception {
 
 		this.getProxiedEventListner().eventOccurred(event);
 	}
@@ -29,7 +29,7 @@ public class LiffEventListenerProxy<EventType> implements
 	/**
 	 * @return the proxied
 	 */
-	public LiffEventListener<EventType> getProxiedEventListner() {
+	public LiffEventListener getProxiedEventListner() {
 		return proxied;
 	}
 

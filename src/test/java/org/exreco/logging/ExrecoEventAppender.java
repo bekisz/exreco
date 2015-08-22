@@ -14,8 +14,8 @@ import org.apache.logging.log4j.core.config.plugins.*;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 // note: class name need not match the @Plugin name.
-@Plugin(name = "MemoryAppender", category = "Core", elementType = "appender", printObject = true)
-public final class MemoryAppender extends AbstractAppender {
+@Plugin(name = "ExrecoEventAppender", category = "Core", elementType = "appender", printObject = true)
+public final class ExrecoEventAppender extends AbstractAppender {
 
 	/**
 	 * 
@@ -25,7 +25,7 @@ public final class MemoryAppender extends AbstractAppender {
 	private final Lock readLock = rwLock.readLock();
 	List<LogEvent> loggedEvents = new LinkedList<LogEvent>();
 
-	protected MemoryAppender(String name, Filter filter, Layout<? extends Serializable> layout,
+	protected ExrecoEventAppender(String name, Filter filter, Layout<? extends Serializable> layout,
 			final boolean ignoreExceptions) {
 		super(name, filter, layout, ignoreExceptions);
 	}
@@ -64,7 +64,7 @@ public final class MemoryAppender extends AbstractAppender {
 	// and call this factory method to construct an appender instance with
 	// the configured attributes.
 	@PluginFactory
-	public static MemoryAppender createAppender(@PluginAttribute("name") String name,
+	public static ExrecoEventAppender createAppender(@PluginAttribute("name") String name,
 			@PluginElement("Layout") Layout<? extends Serializable> layout,
 			@PluginElement("Filter") final Filter filter, @PluginAttribute("otherAttribute") String otherAttribute) {
 		if (name == null) {
@@ -74,6 +74,6 @@ public final class MemoryAppender extends AbstractAppender {
 		if (layout == null) {
 			layout = PatternLayout.createDefaultLayout();
 		}
-		return new MemoryAppender(name, filter, layout, true);
+		return new ExrecoEventAppender(name, filter, layout, true);
 	}
 }

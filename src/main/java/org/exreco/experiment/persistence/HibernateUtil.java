@@ -49,6 +49,9 @@ public class HibernateUtil {
 		try {
 			getSessionFactory().close();
 			buildSessionFactory();
+		} catch (Exception e) {
+			logger.error("Could not rebuild session factory.", e);
+			throw e;
 		} finally {
 			rebuildLock.writeLock().unlock();
 		}
@@ -65,6 +68,10 @@ public class HibernateUtil {
 			}
 
 			buildSessionFactory();
+		} catch (Exception e) {
+			logger.error("Could not rebuild session factory.", e);
+			throw e;
+
 		} finally {
 			rebuildLock.writeLock().unlock();
 		}
@@ -98,6 +105,10 @@ public class HibernateUtil {
 			session.persist(object);
 			session.getTransaction().commit();
 			session.close();
+		} catch (Exception e) {
+			logger.error("Could not persist obect.", e);
+			throw e;
+
 		} finally {
 			HibernateUtil.rebuildLock.readLock().unlock();
 		}
@@ -113,6 +124,10 @@ public class HibernateUtil {
 			session.saveOrUpdate(object);
 			session.getTransaction().commit();
 			session.close();
+		} catch(Exception e) {
+			logger.error("Save or update object failed.",e);
+			throw e;
+
 		} finally {
 			HibernateUtil.rebuildLock.readLock().unlock();
 		}

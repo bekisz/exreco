@@ -13,11 +13,10 @@ import javax.jms.Session;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.exreco.experiment.util.events.LiffEvent;
 import org.exreco.experiment.util.events.LiffEventListener;
 
 
-public class LiffEvent2JmsEventAdapter implements LiffEventListener<LiffEvent>,
+public class LiffEvent2JmsEventAdapter implements LiffEventListener,
 		Serializable {
 
 	/**
@@ -85,7 +84,7 @@ public class LiffEvent2JmsEventAdapter implements LiffEventListener<LiffEvent>,
 	}
 
 	@Override
-	synchronized public void eventOccurred(LiffEvent event) throws Exception {
+	synchronized public void eventOccurred(Serializable event) throws Exception {
 
 		try {
 

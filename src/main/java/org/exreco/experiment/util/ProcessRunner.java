@@ -24,11 +24,15 @@ public class ProcessRunner extends Thread {
 	private List<String> command = new ArrayList<String>(4);
 	private Process process;
 	private File directory;
+	private String homeDirectory;
 	final private Lock lock = new ReentrantLock();
 	private final Condition ready = lock.newCondition();
 	private boolean exited;
 	private boolean started;
+	private boolean isServiceReady;
 	private int exitedWith = 0;
+	private String waitTillLineMatches = null;
+	private Pattern pattern;
 
 	public boolean isExited() {
 		return exited;
@@ -47,18 +51,26 @@ public class ProcessRunner extends Thread {
 	}
 
 	public ProcessRunner() {
-		super("ProcessRunner");
+		this("ProcessRunner");
 	}
 
 	public ProcessRunner(String name) {
 		super(name);
+		this.createShutdownHook();
+	}
+
+	public void patientStart(String waitTillLineMatches) {
+
+		this.setWaitTillLineMatches(waitTillLineMatches);
+
+		this.patientStart();
 	}
 
 	public void patientStart() {
 		lock.lock();
 		try {
+
 			this.start();
-			this.createShutdownHook();
 			ready.await();
 		} catch (InterruptedException e) {
 			logger.error("InterruptedException on Active Message Queue thread.", e);
@@ -101,39 +113,31 @@ public class ProcessRunner extends Thread {
 
 	@Override
 	public void run() {
+
+		this.setStarted(true);
+		this.setExited(false);
+		this.setExitedWith(0);
 		try {
-			this.lock.lock();
-
-			synchronized (this) {
-
-				this.setStarted(true);
-				this.setExited(false);
-				this.setExitedWith(0);
-			}
-
 			this.startProcess();
-			// this.createShutdownHook();
 			this.processStandardOutput();
-			synchronized (this) {
-
+			try {
+				this.lock.lock();
 				final int exitStatus = process.waitFor();
 				this.setExited(true);
 				this.setExitedWith(exitStatus);
 				logger.debug("Process exited with status: {}", exitStatus);
 				this.exitedWith(exitStatus);
-			}
-			if (process != null) {
-				process.destroy();
-			}
+				if (process != null) {
+					process.destroy();
+				}
 				this.ready.signalAll();
+			} finally {
+				lock.unlock();
+			}
+
 		} catch (Exception e) {
 			logger.error("Process runner error. ", e);
 		}
-		 finally {
-			lock.unlock();
-		}
-
-		
 
 	}
 
@@ -215,6 +219,20 @@ public class ProcessRunner extends Thread {
 		String line;
 		while ((line = br.readLine()) != null) {
 			this.stdout(line);
+			if (this.pattern != null) {
+				Matcher matcher = pattern.matcher(line);
+				if (matcher.find()) {
+					logger.debug("Matching line found to wake up parent thread.");
+					lock.lock();
+					try {
+						this.setServiceReady(true);
+						this.ready.signalAll();
+
+					} finally {
+						lock.unlock();
+					}
+				}
+			}
 		}
 	}
 
@@ -240,6 +258,32 @@ public class ProcessRunner extends Thread {
 
 	public void setStarted(boolean started) {
 		this.started = started;
+	}
+
+	public boolean isServiceReady() {
+		return isServiceReady;
+	}
+
+	public void setServiceReady(boolean isServiceReady) {
+		this.isServiceReady = isServiceReady;
+	}
+
+	public String getWaitTillLineMatches() {
+		return waitTillLineMatches;
+	}
+
+	public void setWaitTillLineMatches(String waitTillLineMatches) {
+		this.waitTillLineMatches = waitTillLineMatches;
+		this.pattern = Pattern.compile(this.waitTillLineMatches);
+	}
+
+	public String getHomeDirectory() {
+		return homeDirectory;
+	}
+
+	public void setHomeDirectory(String homeDirectory) {
+		this.homeDirectory = homeDirectory;
+		this.setDirectory(new File(homeDirectory));
 	}
 
 }

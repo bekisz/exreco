@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.util.Timer;
 
 import javax.swing.JButton;
@@ -40,7 +41,7 @@ public class ExperimentTab extends JComponent implements ActionListener,
 			.getName());
 
 	private ExperimentTracker experimentTracker;
-	private final EventHub<LiffEvent> eventHub = new EventHub<LiffEvent>();
+	private final EventHub eventHub = new EventHub();
 	private final JProgressBar experimentprogressBar;
 	private final JButton startButton;
 	private final JButton pauseButton;
@@ -270,7 +271,7 @@ public class ExperimentTab extends JComponent implements ActionListener,
 	}
 
 	@Override
-	public void eventOccurred(LiffEvent liffEvent) throws Exception {
+	public void eventOccurred(Serializable liffEvent) throws Exception {
 
 		try {
 			if (liffEvent instanceof Experiment.ExperimentStatusEvent) {
@@ -352,7 +353,7 @@ public class ExperimentTab extends JComponent implements ActionListener,
 	/**
 	 * @return the eventHub
 	 */
-	public EventHub<LiffEvent> getEventHub() {
+	public EventHub getEventHub() {
 		return eventHub;
 	}
 

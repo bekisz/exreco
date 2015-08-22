@@ -18,7 +18,7 @@ public abstract class Case implements Serializable, AgeTracked, CaseIf {
 	 * 
 	 */
 	private static final long serialVersionUID = -6181180460065112512L;
-	private final EventSource<LiffEvent> eventSource = new EventSource<LiffEvent>();
+	private final EventSource eventSource = new EventSource();
 	private DimensionSetPoint dimensionSetpoint;
 	private String threadName;
 	private int isoCaseId = 0;
@@ -91,14 +91,14 @@ public abstract class Case implements Serializable, AgeTracked, CaseIf {
 	}
 
 	public static class ToStatusLiffEventConverter extends
-			LiffEventConverter<LiffEvent> implements Serializable {
+			LiffEventConverter implements Serializable {
 
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1807671701294776564L;
 
-		public ToStatusLiffEventConverter(LiffEventListener<LiffEvent> proxied) {
+		public ToStatusLiffEventConverter(LiffEventListener proxied) {
 			super(proxied);
 
 		}
@@ -109,7 +109,7 @@ public abstract class Case implements Serializable, AgeTracked, CaseIf {
 		}
 
 		@Override
-		protected LiffEvent convert(LiffEvent event) {
+		protected Serializable convert(Serializable event) {
 			Case.Event caseEvent = (Case.Event) event;
 			CaseStatusEvent caseStatusEvent = caseEvent.getCase()
 					.createStatus();
@@ -175,7 +175,7 @@ public abstract class Case implements Serializable, AgeTracked, CaseIf {
 	/**
 	 * @return the endOfTickEventSource
 	 */
-	public EventSource<LiffEvent> getEventSource() {
+	public EventSource getEventSource() {
 		return eventSource;
 	}
 

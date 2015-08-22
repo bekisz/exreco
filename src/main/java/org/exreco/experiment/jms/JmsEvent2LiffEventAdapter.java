@@ -18,22 +18,21 @@ public class JmsEvent2LiffEventAdapter implements MessageListener, Serializable 
 
 	private static Logger logger = LogManager
 			.getLogger(JmsEvent2LiffEventAdapter.class.getName());
-	private final LiffEventListener<LiffEvent> liffEventListener;
+	private final LiffEventListener liffEventListener;
 
 	public JmsEvent2LiffEventAdapter(
-			LiffEventListener<LiffEvent> liffEventListener) {
+			LiffEventListener liffEventListener) {
 		super();
 		this.liffEventListener = liffEventListener;
 	}
   
-	protected LiffEvent convert(Message message) throws Exception {
-		LiffEvent liffEvent = null;
+	protected Serializable convert(Message message) throws Exception {
+		Serializable liffEvent = null;
 		if (message instanceof ObjectMessage) {
 			
 			ObjectMessage objectMessage = (ObjectMessage) message;
 
-			Serializable object = objectMessage.getObject();
-			liffEvent = (LiffEvent) object;
+			liffEvent = objectMessage.getObject();
 		} else {
 			logger.error("Unexpected JMS message type: {}", message.getClass()
 					.getName());
@@ -45,7 +44,7 @@ public class JmsEvent2LiffEventAdapter implements MessageListener, Serializable 
 	public void onMessage(Message message) {
 
 		try {
-			LiffEvent event = this.convert(message);
+			Serializable event = this.convert(message);
 			this.getLiffEventListener().eventOccurred(event);
 			message.acknowledge();
 		} catch (Exception e) {
@@ -57,7 +56,7 @@ public class JmsEvent2LiffEventAdapter implements MessageListener, Serializable 
 	/**
 	 * @return the liffEventListener
 	 */
-	public LiffEventListener<LiffEvent> getLiffEventListener() {
+	public LiffEventListener getLiffEventListener() {
 		return liffEventListener;
 	}
 }

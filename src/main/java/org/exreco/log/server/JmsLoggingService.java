@@ -54,7 +54,7 @@ public class JmsLoggingService {
 		 * Create a JNDI API InitialContext object if none exists yet.
 		 */
 		ThreadContext.put("pid", LiffUtils.getProcessId());
-		System.out.println("________Starting {}..JmsLoggingService.class.getName()");
+
 		logger.debug("Starting {}...", JmsLoggingService.class.getName());
 		try {
 			jndiContext = new InitialContext();

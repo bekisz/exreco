@@ -79,7 +79,7 @@ public abstract class LogBase extends TableLogger.Command implements
 	 */
 
 	@Override
-	public void eventOccurred(LiffEvent event) {
+	public void eventOccurred(Serializable event) {
 
 		if (event instanceof World.Event) {
 			Case.Event caseEvent = (Case.Event) event;

@@ -13,8 +13,8 @@
 		<property name="experiment" ref="experiment" />
 
 	</bean>
-	 <import resource="deployment-beans-single-node.xml" /> 
-	<!--<import resource="deployment-beans-multi-node-embedded.xml" /> -->
+	<import resource="deployment-beans-multi-node-embedded.xml" /> 
+	<!--  <import resource="deployment-beans-single-node.xml" /> -->
 	<import resource="experiments/short-experiment-beans.xml" />
 
 	<!-- Choose Gui to track the experiments. It can be deleted to run in non-UI 

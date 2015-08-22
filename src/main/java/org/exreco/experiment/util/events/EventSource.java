@@ -15,25 +15,25 @@ import org.apache.logging.log4j.Logger;
  * 
  * @param <EventType>
  */
-public class EventSource<EventType extends Serializable> implements Serializable {
+public class EventSource implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -4741010987757902893L;
-	private final List<LiffEventListener<EventType>> listeners;
+	private final List<LiffEventListener> listeners;
 	private static Logger logger = LogManager.getLogger(EventSource.class.getName());
 	private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
 	public EventSource() {
-		this.listeners = new LinkedList<LiffEventListener<EventType>>();
+		this.listeners = new LinkedList<LiffEventListener>();
 	}
 
-	public EventSource(List<LiffEventListener<EventType>> listeners) {
+	public EventSource(List<LiffEventListener> listeners) {
 		this.listeners = listeners;
 	}
 
-	public LiffEventListener<EventType> wireTo(LiffEventListener<EventType> to) {
+	public LiffEventListener wireTo(LiffEventListener to) {
 		this.getLock().writeLock().lock();
 		try {
 
@@ -45,7 +45,7 @@ public class EventSource<EventType extends Serializable> implements Serializable
 		return to;
 	}
 
-	public boolean unwire(LiffEventListener<EventType> to) {
+	public boolean unwire(LiffEventListener to) {
 
 		boolean contains = false;
 
@@ -68,12 +68,12 @@ public class EventSource<EventType extends Serializable> implements Serializable
 		}
 	}
 
-	public void wireTo(List<LiffEventListener<EventType>> listTo) {
+	public void wireTo(List<LiffEventListener> listTo) {
 
 		this.getLock().writeLock().lock();
 		try {
 
-			for (LiffEventListener<EventType> to : listTo) {
+			for (LiffEventListener to : listTo) {
 
 				this.wireTo(to);
 			}
@@ -82,11 +82,11 @@ public class EventSource<EventType extends Serializable> implements Serializable
 		}
 	}
 
-	public void fireEvent(EventType event) {
+	public void fireEvent(Serializable event) {
 		this.getLock().readLock().lock();
 		try {
 
-			for (LiffEventListener<EventType> listener : this.listeners) {
+			for (LiffEventListener listener : this.listeners) {
 
 				listener.eventOccurred(event);
 			}
@@ -103,7 +103,7 @@ public class EventSource<EventType extends Serializable> implements Serializable
 	/**
 	 * @return the listeners
 	 */
-	public List<LiffEventListener<EventType>> getListeners() {
+	public List<LiffEventListener> getListeners() {
 		//return new LinkedList<LiffEventListener<EventType>>(this.listeners);
 		return this.listeners;
 	}

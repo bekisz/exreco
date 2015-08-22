@@ -51,14 +51,14 @@ import org.exreco.experiment.util.events.RemoteLiffEventListener;
 import org.exreco.liff.core.WorldStatusEvent;
 
 public class Experiment
-		implements Iterator<CaseShellIf>, RemoteExperimentTracker, Remote, LiffEventListener<LiffEvent> {
+		implements Iterator<CaseShellIf>, RemoteExperimentTracker, Remote, LiffEventListener {
 
 	public final static String caseStatusTopicName = "LiffCaseStatus";
 	public final static String experimentStatusTopicName = "LiffExperimentStatus";
 	public final static String userCommandTopicName = "LiffUserCommand";
 	// public final static String worldLogTopicName = "LiffWorldLog";
 
-	private final EventHub<LiffEvent> experimentEventHub = new EventHub<LiffEvent>();
+	private final EventHub experimentEventHub = new EventHub();
 	// just to keep the reference during the lifcycle of these services :
 	// private Collection<RemoteInsertableAdapter> remoteInsertableAdapters =
 	// new ArrayList<RemoteInsertableAdapter>(5);
@@ -82,7 +82,7 @@ public class Experiment
 
 	private DynamicDimensionSetPointClassHibernateHelper dynamicSetPointHelper = new DynamicDimensionSetPointClassHibernateHelper();
 	
-	final private EventSource<LiffEvent> eventSource = new EventSource<LiffEvent>();
+	final private EventSource eventSource = new EventSource();
 	private final Map<Integer, CaseStatusEvent> caseMap = Collections
 			.synchronizedMap(new LinkedHashMap<Integer, CaseStatusEvent>());
 	private final Map<Integer, CaseStatusEvent> runningCaseMap = Collections
@@ -472,10 +472,10 @@ public class Experiment
 
 	}
 
-	public class UserCommandListener implements LiffEventListener<LiffEvent> {
+	public class UserCommandListener implements LiffEventListener {
 
 		@Override
-		public void eventOccurred(org.exreco.experiment.util.events.LiffEvent event) throws Exception {
+		public void eventOccurred(Serializable event) throws Exception {
 			// synchronized (Experiment.this.pauseLock) {
 			Experiment.this.pauseLock.lock();
 			if (event instanceof StartCommand) {
@@ -610,7 +610,7 @@ public class Experiment
 
 		// this.getExperimentEventHub().fireEvent(new ExperimentStarted());
 		// Case.getEventSource().getListeners().add(this.getExperimentEventHub());
-		// LiffEventListener<LiffEvent> caseTrackerListener = new
+		// LiffEventListener caseTrackerListener = new
 		// DelayingEventFloodFilter(
 		// new RmiExperimentTrackerAdapter(this.getCaseTracker()));
 		// LiffEvent2JmsEventAdapter liffEvent2JmsEventAdapter = new
@@ -620,13 +620,13 @@ public class Experiment
 		// CaseShellIf Events-> Two-way -> BlockingEventFloodFilter
 		// -> To.StatusEvent Converter -> caseStatusEvent Topic
 
-		LiffEventListener<LiffEvent> liffEventListener = this.getDeployment().getEventTopicHome()
+		LiffEventListener liffEventListener = this.getDeployment().getEventTopicHome()
 				.getEventListener(caseStatusTopicName);
 
-		LiffEventListener<LiffEvent> toStatusEventConverter = new Case.ToStatusLiffEventConverter(liffEventListener);
-		BlockingEventFloodFilter<LiffEvent> delayEventFloodFilter = new BlockingEventFloodFilter<LiffEvent>(
+		LiffEventListener toStatusEventConverter = new Case.ToStatusLiffEventConverter(liffEventListener);
+		BlockingEventFloodFilter delayEventFloodFilter = new BlockingEventFloodFilter(
 				toStatusEventConverter, 250);
-		LiffEventListener<LiffEvent> twoWayEventListenerProxy = new ExperimentTwoWayEventListenerProxy(
+		LiffEventListener twoWayEventListenerProxy = new ExperimentTwoWayEventListenerProxy(
 				toStatusEventConverter, delayEventFloodFilter);
 
 		while (this.hasNext() && !this.toExit) {
@@ -919,7 +919,7 @@ public class Experiment
 	 * @return the eventSource
 	 */
 	@Override
-	public EventSource<LiffEvent> getEventSource() throws Exception {
+	public EventSource getEventSource() throws Exception {
 		return eventSource;
 	}
 
@@ -934,7 +934,7 @@ public class Experiment
 	}
 
 	@Override
-	public void eventOccurred(LiffEvent event) throws Exception {
+	public void eventOccurred(Serializable event) throws Exception {
 
 		if (event instanceof CaseStatusEvent) {
 			CaseStatusEvent caseStatusEvent = (CaseStatusEvent) event;
@@ -1102,7 +1102,7 @@ public class Experiment
 		return point2CaseLifeCycleState;
 	}
 
-	public EventHub<LiffEvent> getExperimentEventHub() {
+	public EventHub getExperimentEventHub() {
 		return experimentEventHub;
 	}
 	/**

@@ -21,10 +21,11 @@ abstract public class DirectReplicationFitnessGene  implements Gene, AgeTracked,
 	private static final long serialVersionUID = 4700311447619026334L;
 
 	protected class ReplicatorListener implements
-			LiffEventListener<Replicator.Event> {
+			LiffEventListener {
 		@Override
-		public void eventOccurred(Replicator.Event event) {
-
+		public void eventOccurred(Serializable serEvent) {
+			Replicator.Event event = (Replicator.Event) serEvent;
+			
 			if (event instanceof Replicator.DestructedEvent) {
 				DirectReplicationFitnessGene.this.unRegisterReplicatorInstance(event.getReplicator());
 			} else if (event instanceof Replicator.CreatedEvent) {
@@ -265,7 +266,7 @@ abstract public class DirectReplicationFitnessGene  implements Gene, AgeTracked,
 		return true;
 	}
 
-	public LiffEventListener<Replicator.Event> getReplicatorEventListener() {
+	public LiffEventListener getReplicatorEventListener() {
 		return this.replicatorListener;
 	}
 

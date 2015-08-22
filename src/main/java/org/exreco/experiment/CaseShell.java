@@ -35,7 +35,7 @@ public class CaseShell implements CaseShellIf, Serializable {
 	private int caseId;
 	private CaseIf proxiedCase = null;
 	private ApplicationContext context;
-	private final EventSource<LiffEvent> eventSource = new EventSource<LiffEvent>();
+	private final EventSource eventSource = new EventSource();
 	// private ExperimentTracker experimentTracker;
 	private long experimentId;
 	private static String log4j2ConfigFile = null;
@@ -213,7 +213,7 @@ public class CaseShell implements CaseShellIf, Serializable {
 		this.proxiedCase = proxiedCase;
 	}
 
-	public EventSource<LiffEvent> getEventSource() {
+	public EventSource getEventSource() {
 		return eventSource;
 	}
 	/*

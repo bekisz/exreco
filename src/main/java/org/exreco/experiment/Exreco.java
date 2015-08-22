@@ -54,18 +54,18 @@ public class Exreco {
 
 
 	protected static class ExperimentTwoWayEventListenerProxy
-			extends TwoWayEventListenerProxy<LiffEvent> {
+			extends TwoWayEventListenerProxy {
 		private static final long serialVersionUID = -2506355405661545709L;
 
 		public ExperimentTwoWayEventListenerProxy(
-				LiffEventListener<LiffEvent> defaultWay,
-				LiffEventListener<LiffEvent> alternateProxied) {
+				LiffEventListener defaultWay,
+				LiffEventListener alternateProxied) {
 			super(defaultWay, alternateProxied);
 
 		}
 
 		@Override
-		protected boolean isSwitched(LiffEvent event) {
+		protected boolean isSwitched(Serializable event) {
 			return (event instanceof World.TickEndedEvent);
 
 		}
@@ -81,7 +81,7 @@ public class Exreco {
 		this.wireEvents();
 	}
 
-	static public void wire(EventSource<LiffEvent> from, LiffEventListener<LiffEvent> to) {
+	static public void wire(EventSource from, LiffEventListener to) {
 		from.wireTo(to);
 	}
 	
@@ -117,11 +117,11 @@ public class Exreco {
 //				tableLogger.setInsertable(insertable);
 //				this.remoteInsertableAdapters.add(remoteInsertableAdapter);
 //			} else {
-//				LiffEventListener<LiffEvent> event = this.getEventTopicHome()
+//				LiffEventListener event = this.getEventTopicHome()
 //						.getEventListener(worldLogTopicName);
 //				tableLogger
 //						.setInsertable(new Insertable2LiffEventAdapter(event));
-//				LiffEvent2InsertableAdapter<LiffEvent> liffEvent2InsertableAdapter = new LiffEvent2InsertableAdapter<LiffEvent>(
+//				LiffEvent2InsertableAdapter liffEvent2InsertableAdapter = new LiffEvent2InsertableAdapter(
 //						tableLogger.getTable());
 //
 //				this.getEventTopicHome().getEventSource(worldLogTopicName)
@@ -145,7 +145,7 @@ public class Exreco {
 	
 		// this.getExperimentEventHub().fireEvent(new ExperimentStarted());
 		// Case.getEventSource().getListeners().add(this.getExperimentEventHub());
-		// LiffEventListener<LiffEvent> caseTrackerListener = new
+		// LiffEventListener caseTrackerListener = new
 		// DelayingEventFloodFilter(
 		// new RmiExperimentTrackerAdapter(this.getCaseTracker()));
 		// LiffEvent2JmsEventAdapter liffEvent2JmsEventAdapter = new
@@ -155,14 +155,14 @@ public class Exreco {
 		// CaseShellIf Events-> Two-way -> BlockingEventFloodFilter 
 		//	-> To.StatusEvent Converter -> caseStatusEvent Topic
 		/*
-		LiffEventListener<LiffEvent> liffEventListener = this.getDeployment().getEventTopicHome()
+		LiffEventListener liffEventListener = this.getDeployment().getEventTopicHome()
 				.getEventListener(Experiment.caseStatusTopicName);
 
-		LiffEventListener<LiffEvent> toStatusEventConverter = new Case.ToStatusLiffEventConverter(
+		LiffEventListener toStatusEventConverter = new Case.ToStatusLiffEventConverter(
 				liffEventListener);
-		BlockingEventFloodFilter<LiffEvent> delayEventFloodFilter = new BlockingEventFloodFilter<LiffEvent>(
+		BlockingEventFloodFilter delayEventFloodFilter = new BlockingEventFloodFilter(
 				toStatusEventConverter, 50);
-		LiffEventListener<LiffEvent> twoWayEventListenerProxy = new ExperimentTwoWayEventListenerProxy(
+		LiffEventListener twoWayEventListenerProxy = new ExperimentTwoWayEventListenerProxy(
 				toStatusEventConverter, delayEventFloodFilter);
 		*/
 		this.getExperiment().run();

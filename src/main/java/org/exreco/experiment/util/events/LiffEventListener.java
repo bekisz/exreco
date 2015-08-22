@@ -1,8 +1,9 @@
 package org.exreco.experiment.util.events;
 
+import java.io.Serializable;
 import java.util.EventListener;
 
-public interface LiffEventListener<EventType> extends EventListener {
+public interface LiffEventListener extends EventListener {
 
-	void eventOccurred(EventType event) throws Exception;
+	void eventOccurred(Serializable event) throws Exception;
 }

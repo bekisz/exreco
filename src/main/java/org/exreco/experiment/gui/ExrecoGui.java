@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 import java.net.URL;
 import java.rmi.Remote;
 import java.util.LinkedHashMap;
@@ -31,7 +32,7 @@ public class ExrecoGui extends JFrame implements ActionListener, RemoteLiffEvent
 	private static final long serialVersionUID = 1075092081495136866L;
 	private final Map<Long, ExperimentTab> tabs = new LinkedHashMap<Long, ExperimentTab>();
 	private final JTabbedPane tabbedPane = new JTabbedPane();
-	private final EventHub<LiffEvent> eventHub = new EventHub<LiffEvent>();
+	private final EventHub eventHub = new EventHub();
 	private EventTopicHome eventTopicHome;
 	private String iconImageLocation;
 	private int preferredSizeX = 750;
@@ -78,7 +79,7 @@ public class ExrecoGui extends JFrame implements ActionListener, RemoteLiffEvent
 	}
 
 	@Override
-	public void eventOccurred(LiffEvent liffEvent) throws Exception {
+	public void eventOccurred(Serializable liffEvent) throws Exception {
 
 		try {
 			if (liffEvent instanceof Experiment.ExperimentStatusEvent) {
@@ -119,7 +120,7 @@ public class ExrecoGui extends JFrame implements ActionListener, RemoteLiffEvent
 	/**
 	 * @return the eventHub
 	 */
-	public EventHub<LiffEvent> getEventHub() {
+	public EventHub getEventHub() {
 		return eventHub;
 	}
 
@@ -138,7 +139,7 @@ public class ExrecoGui extends JFrame implements ActionListener, RemoteLiffEvent
 
 		eventTopicHome.getEventSource("LiffExperimentStatus").wireTo(this);
 
-		LiffEventListener<LiffEvent> userCommandEventHandler = eventTopicHome.getEventListener("LiffUserCommand");
+		LiffEventListener userCommandEventHandler = eventTopicHome.getEventListener("LiffUserCommand");
 		this.getEventHub().wireTo(userCommandEventHandler);
 
 	}

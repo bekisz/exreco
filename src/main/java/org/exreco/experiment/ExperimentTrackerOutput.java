@@ -73,7 +73,7 @@ public interface ExperimentTrackerOutput {
 	/**
 	 * @return the eventSource
 	 */
-	public EventSource<LiffEvent> getEventSource() throws Exception;
+	public EventSource getEventSource() throws Exception;
 
 	public void addListener(RemoteLiffEventListener listener) throws Exception;
 

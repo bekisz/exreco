@@ -18,8 +18,8 @@ import org.exreco.experiment.util.StopWatch;
  * 
  */
 public class BlockingEventFloodFilter<EventType extends Serializable> extends
-		LiffEventListenerProxy<EventType> implements
-		LiffEventListener<EventType>, Serializable {
+		LiffEventListenerProxy implements
+		LiffEventListener, Serializable {
 
 	/**
 	 * 
@@ -40,14 +40,14 @@ public class BlockingEventFloodFilter<EventType extends Serializable> extends
 		return stopWatch;
 	}
 
-	public BlockingEventFloodFilter(LiffEventListener<EventType> proxied) {
+	public BlockingEventFloodFilter(LiffEventListener proxied) {
 		super(proxied);
 		this.sleepTime = 100;
 		this.init();
 
 	}
 
-	public BlockingEventFloodFilter(LiffEventListener<EventType> proxied,
+	public BlockingEventFloodFilter(LiffEventListener proxied,
 			int sleepTime) {
 		super(proxied);
 
@@ -68,7 +68,7 @@ public class BlockingEventFloodFilter<EventType extends Serializable> extends
 	}
 
 	@Override
-	synchronized public void eventOccurred(EventType event) throws Exception {
+	synchronized public void eventOccurred(Serializable event) throws Exception {
 		synchronized (this.stopWatch) {
 
 			if (!this.getStopWatch().isRunning()) { // lazy init

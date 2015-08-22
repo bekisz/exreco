@@ -16,9 +16,7 @@ import org.apache.logging.log4j.Logger;
  * message will be proagated immediately. (not after the sleep time is over)
  * 
  */
-public class DelayingEventFloodFilter<EventType extends Serializable> extends
-		LiffEventListenerProxy<EventType> implements
-		 Serializable {
+public class DelayingEventFloodFilter extends LiffEventListenerProxy implements Serializable {
 	protected class BackgroundThread extends Thread {
 
 		@Override
@@ -36,19 +34,14 @@ public class DelayingEventFloodFilter<EventType extends Serializable> extends
 					DelayingEventFloodFilter.this.setAllowedToPropagate(false);
 
 					try {
-						EventType lastEvent;
-						lastEvent = DelayingEventFloodFilter.this
-								.getLastChachedEvent();
+						Serializable lastEvent;
+						lastEvent = DelayingEventFloodFilter.this.getLastChachedEvent();
 						if (lastEvent != null) {
-							DelayingEventFloodFilter.this
-									.setLastCachedEvent(null);
-							DelayingEventFloodFilter.this
-									.getProxiedEventListner().eventOccurred(
-											lastEvent);
+							DelayingEventFloodFilter.this.setLastCachedEvent(null);
+							DelayingEventFloodFilter.this.getProxiedEventListner().eventOccurred(lastEvent);
 
 						} else {
-							DelayingEventFloodFilter.this
-									.setAllowedToPropagate(true);
+							DelayingEventFloodFilter.this.setAllowedToPropagate(true);
 						}
 					} catch (Exception e) {
 						logger.throwing(Level.ERROR, e);
@@ -58,11 +51,10 @@ public class DelayingEventFloodFilter<EventType extends Serializable> extends
 		}
 	};
 
-	private static Logger logger = LogManager
-			.getLogger(DelayingEventFloodFilter.class.getName());
+	private static Logger logger = LogManager.getLogger(DelayingEventFloodFilter.class.getName());
 
 	transient private Thread backgroundThread;
-	transient private EventType lastChachedEvent;
+	transient private Serializable lastChachedEvent;
 
 	transient private boolean allowedToPropagate;
 	transient private boolean terminated;
@@ -74,15 +66,14 @@ public class DelayingEventFloodFilter<EventType extends Serializable> extends
 
 	private final int sleepTime;
 
-	public DelayingEventFloodFilter(LiffEventListener<EventType> proxied) {
+	public DelayingEventFloodFilter(LiffEventListener proxied) {
 		super(proxied);
 		this.sleepTime = 30;
 		this.init();
 
 	}
 
-	public DelayingEventFloodFilter(LiffEventListener<EventType> proxied,
-			int sleepTime) {
+	public DelayingEventFloodFilter(LiffEventListener proxied, int sleepTime) {
 		super(proxied);
 
 		this.sleepTime = sleepTime;
@@ -104,7 +95,7 @@ public class DelayingEventFloodFilter<EventType extends Serializable> extends
 	/**
 	 * @return the lastChachedEvent
 	 */
-	synchronized public EventType getLastChachedEvent() {
+	synchronized public Serializable getLastChachedEvent() {
 		return lastChachedEvent;
 	}
 
@@ -112,12 +103,12 @@ public class DelayingEventFloodFilter<EventType extends Serializable> extends
 	 * @param lastChachedEvent
 	 *            the lastChachedEvent to set
 	 */
-	synchronized public void setLastCachedEvent(EventType lastChachedEvent) {
+	synchronized public void setLastCachedEvent(Serializable lastChachedEvent) {
 		this.lastChachedEvent = lastChachedEvent;
 	}
 
 	@Override
-	synchronized public void eventOccurred(EventType event) throws Exception {
+	synchronized public void eventOccurred(Serializable event) throws Exception {
 		this.setLastCachedEvent(event);
 		if (this.getBackgroundThread() == null) {
 			super.eventOccurred(event);
@@ -132,8 +123,7 @@ public class DelayingEventFloodFilter<EventType extends Serializable> extends
 		}
 	}
 
-	private void readObject(ObjectInputStream in) throws IOException,
-			ClassNotFoundException {
+	private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
 		// our "pseudo-constructor"
 		in.defaultReadObject();
 

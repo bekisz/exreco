@@ -3,6 +3,7 @@ package org.exreco.experiment.gui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +22,7 @@ import org.exreco.experiment.util.events.LiffEventListener;
 import org.exreco.liff.core.WorldStatusEvent;
 
 public class ExperimentInfoPanel extends javax.swing.JPanel implements
-		LiffEventListener<LiffEvent> {
+		LiffEventListener {
 	/**
 	 * 
 	 */
@@ -211,7 +212,7 @@ public class ExperimentInfoPanel extends javax.swing.JPanel implements
 	}
 
 	@Override
-	public void eventOccurred(LiffEvent event) throws Exception {
+	public void eventOccurred(Serializable event) throws Exception {
 		if (event instanceof Experiment.ExperimentStatusEvent) {
 			Experiment.ExperimentStatusEvent expStatEvent = (Experiment.ExperimentStatusEvent) event;
 			String str = " - ";

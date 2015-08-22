@@ -11,7 +11,7 @@ import org.exreco.experiment.util.events.LiffEvent;
 import org.exreco.experiment.util.events.LiffEventListener;
 
 
-public class TableLogger implements LiffEventListener<LiffEvent>, Serializable {
+public class TableLogger implements LiffEventListener, Serializable {
 	/**
 	 * 
 	 */
@@ -21,7 +21,7 @@ public class TableLogger implements LiffEventListener<LiffEvent>, Serializable {
 
 
 	static abstract public class Command implements
-			LiffEventListener<LiffEvent>,
+			LiffEventListener,
 			Serializable {
 
 		/**
@@ -39,7 +39,7 @@ public class TableLogger implements LiffEventListener<LiffEvent>, Serializable {
 		}
 
 		@Override
-		abstract public void eventOccurred(LiffEvent event);
+		abstract public void eventOccurred(Serializable event);
 
 		/**
 		 * @return the tableLogger
@@ -50,7 +50,7 @@ public class TableLogger implements LiffEventListener<LiffEvent>, Serializable {
 
 	}
 
-	private LiffEventListener<LiffEvent> eventHandler;
+	private LiffEventListener eventHandler;
 
 	private String name;
 	private boolean rewrite;
@@ -89,7 +89,7 @@ public class TableLogger implements LiffEventListener<LiffEvent>, Serializable {
 	}
 
 	@Override
-	public void eventOccurred(LiffEvent event) throws Exception {
+	public void eventOccurred(Serializable event) throws Exception {
 		this.getEventMap().eventOccurred(event);
 
 		if (event instanceof Experiment.ExperimentEnded) {
@@ -123,7 +123,7 @@ public class TableLogger implements LiffEventListener<LiffEvent>, Serializable {
 	/**
 	 * @return the eventMap
 	 */
-	public LiffEventListener<LiffEvent> getEventMap() {
+	public LiffEventListener getEventMap() {
 		return eventHandler;
 	}
 
@@ -143,10 +143,10 @@ public class TableLogger implements LiffEventListener<LiffEvent>, Serializable {
 	}
 
 	
-	public LiffEventListener<LiffEvent> getEventHandler() {
+	public LiffEventListener getEventHandler() {
 		return eventHandler;
 	}
-	public void setEventHandler(LiffEventListener<LiffEvent> eventHandler) {
+	public void setEventHandler(LiffEventListener eventHandler) {
 		this.eventHandler = eventHandler;
 	}
 	public boolean isRewrite() {

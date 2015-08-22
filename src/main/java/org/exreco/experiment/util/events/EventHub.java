@@ -2,8 +2,8 @@ package org.exreco.experiment.util.events;
 
 import java.io.Serializable;
 
-public class EventHub<EventType extends Serializable> extends
-		EventSource<EventType> implements LiffEventListener<EventType>,
+public class EventHub extends
+		EventSource implements LiffEventListener,
 		Serializable {
 
 	/**
@@ -12,7 +12,7 @@ public class EventHub<EventType extends Serializable> extends
 	private static final long serialVersionUID = 3515107528859740130L;
 
 	@Override
-	public void eventOccurred(EventType event) {
+	public void eventOccurred(Serializable event) {
 		this.fireEvent(event);
 
 	}

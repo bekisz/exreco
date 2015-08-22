@@ -6,7 +6,7 @@ import org.exreco.experiment.util.events.LiffEvent;
 import org.exreco.experiment.util.events.LiffEventListener;
 
 
-public class RmiExperimentTrackerAdapter implements LiffEventListener<LiffEvent>,
+public class RmiExperimentTrackerAdapter implements LiffEventListener,
 		Serializable {
 
 	/**
@@ -28,7 +28,7 @@ public class RmiExperimentTrackerAdapter implements LiffEventListener<LiffEvent>
 	}
 
 	@Override
-	public void eventOccurred(LiffEvent event) {
+	public void eventOccurred(Serializable event) {
 		if (event instanceof Case.Event) {
 			Case.Event ourCaseEvent = (Case.Event) event;
 			Case ourCase = ourCaseEvent.getCase();

@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -26,7 +27,7 @@ import org.exreco.liff.core.WorldStatusEvent;
 
 
 public class ThreadsPanel extends javax.swing.JPanel implements
-		LiffEventListener<LiffEvent> {
+		LiffEventListener {
 	/**
 	 * 
 	 */
@@ -264,7 +265,7 @@ public class ThreadsPanel extends javax.swing.JPanel implements
 	}
 
 	@Override
-	public void eventOccurred(LiffEvent liffEvent) {
+	public void eventOccurred(Serializable liffEvent) {
 		try {
 			if (liffEvent instanceof Experiment.ExperimentStatusEvent) {
 				Experiment.ExperimentStatusEvent experimentStatusEvent = (Experiment.ExperimentStatusEvent) liffEvent;

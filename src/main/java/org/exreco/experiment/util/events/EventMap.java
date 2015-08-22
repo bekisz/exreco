@@ -6,10 +6,10 @@ import java.util.HashMap;
 
 
 
-public class EventMap<EventType> extends
-		HashMap<Class<? extends EventType>, LiffEventListener<EventType>>
+public class EventMap extends
+		HashMap<Class<? extends Serializable>, LiffEventListener>
 		implements 
-		LiffEventListener<EventType>, Serializable {
+		LiffEventListener, Serializable {
 
 	
 
@@ -18,11 +18,11 @@ public class EventMap<EventType> extends
 	
 
 	@Override
-	public void eventOccurred(EventType event) throws Exception {
+	public void eventOccurred(Serializable event) throws Exception {
 
 		Class<?> eventClass = event.getClass();
 
-		LiffEventListener<EventType> eventHandler = this.get(eventClass);
+		LiffEventListener eventHandler = this.get(eventClass);
 
 		if (eventHandler != null) {
 
@@ -31,12 +31,12 @@ public class EventMap<EventType> extends
 		}
 
 	}
-	public HashMap<Class<? extends EventType>, LiffEventListener<EventType>> getTheEventMap() {
+	public HashMap<Class<? extends Serializable>, LiffEventListener> getTheEventMap() {
 		return this;
 	}
 
 	public void setTheEventMap(
-			HashMap<Class<? extends EventType>, LiffEventListener<EventType>> theEventMap) {
+			HashMap<Class<? extends Serializable>, LiffEventListener> theEventMap) {
 		this.clear();
 		this.putAll(theEventMap);
 	}

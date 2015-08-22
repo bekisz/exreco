@@ -74,7 +74,7 @@ public abstract class Replicator implements Active, AgeTracked, Serializable {
 	private long birthThick = Long.MIN_VALUE;
 	private DirectReplicationFitnessGene gene;
 
-	private final EventSource<Replicator.Event> eventSource = new EventSource<Replicator.Event>();
+	private final EventSource eventSource = new EventSource();
 
 	public Replicator(DirectReplicationFitnessGene gene) {
 
@@ -198,7 +198,7 @@ public abstract class Replicator implements Active, AgeTracked, Serializable {
 	}
 
 
-	public EventSource<Replicator.Event> getEventSource() {
+	public EventSource getEventSource() {
 		return eventSource;
 	}
 

@@ -45,15 +45,5 @@ public class JvmProcessRunnerTest {
 		assertTrue("Process exit with non-zero exit code", jvmProcessRunner.isExited() && exitedWith == 0);
 	}
 
-	@Test
-	public void testStartJppfDriver() {
-		jvmProcessRunner.setMainClass(DriverLauncher.class.getCanonicalName());
-		jvmProcessRunner.setJvmOptions(
-				"-Xmx16m -Dlog4j.configuration=log4j-driver.properties -Djppf.config=jppf-driver.properties -Djava.util.logging.config.file=config/logging-driver.properties");
-
-		jvmProcessRunner.run();
-		int exitedWith = jvmProcessRunner.getExitedWith();
-		assertTrue("Process exit with non-zero exit code", jvmProcessRunner.isExited() && exitedWith == 0);
-	}
 
 }

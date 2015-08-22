@@ -8,8 +8,8 @@ import org.apache.logging.log4j.Logger;
 import org.exreco.experiment.util.events.LiffEventListener;
 
 
-public class LiffEvent2InsertableAdapter<EventType> implements
-		LiffEventListener<EventType>, Serializable {
+public class LiffEvent2InsertableAdapter implements
+		LiffEventListener, Serializable {
 	/**
 	 * 
 	 */
@@ -33,7 +33,7 @@ public class LiffEvent2InsertableAdapter<EventType> implements
 	}
 
 	@Override
-	public void eventOccurred(EventType event) throws Exception {
+	public void eventOccurred(Serializable event) throws Exception {
 		if (event instanceof CreateTableRowEvent) {
 			CreateTableRowEvent tableRowEvent = (CreateTableRowEvent) event;
 			Map<String, ? super Object> map = tableRowEvent.getRow();

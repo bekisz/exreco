@@ -12,9 +12,9 @@ public class Insertable2LiffEventAdapter implements Insertable, Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 345108772156652896L;
-	final private LiffEventListener<LiffEvent> eventHandler;
+	final private LiffEventListener eventHandler;
 
-	public Insertable2LiffEventAdapter(LiffEventListener<LiffEvent> eventHandler) {
+	public Insertable2LiffEventAdapter(LiffEventListener eventHandler) {
 		super();
 		this.eventHandler = eventHandler;
 	}
@@ -28,7 +28,7 @@ public class Insertable2LiffEventAdapter implements Insertable, Serializable {
 	/**
 	 * @return the eventHandler
 	 */
-	public LiffEventListener<LiffEvent> getEventHandler() {
+	public LiffEventListener getEventHandler() {
 		return eventHandler;
 	}
 

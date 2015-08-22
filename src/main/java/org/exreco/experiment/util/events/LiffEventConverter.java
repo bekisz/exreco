@@ -3,7 +3,7 @@ package org.exreco.experiment.util.events;
 import java.io.Serializable;
 
 public abstract class LiffEventConverter<EventType> extends
-		LiffEventListenerProxy<EventType> implements
+		LiffEventListenerProxy implements
 		Serializable {
 
 	/**
@@ -11,7 +11,7 @@ public abstract class LiffEventConverter<EventType> extends
 	 */
 	private static final long serialVersionUID = -1394533093066419265L;
 
-	public LiffEventConverter(LiffEventListener<EventType> proxied) {
+	public LiffEventConverter(LiffEventListener proxied) {
 		super(proxied);
 
 	}
@@ -21,11 +21,11 @@ public abstract class LiffEventConverter<EventType> extends
 
 	}
 
-	abstract protected EventType convert(EventType event);
+	abstract protected Serializable convert(Serializable event);
 
 	@Override
-	public void eventOccurred(EventType event) throws Exception {
-		EventType convertedEvent = this.convert(event);
+	public void eventOccurred(Serializable event) throws Exception {
+		Serializable convertedEvent = this.convert(event);
 		super.eventOccurred(convertedEvent);
 	}
 

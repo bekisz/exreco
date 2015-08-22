@@ -84,9 +84,10 @@ public class ProcessRunnerTest {
 			processRunner.setCommandAsString(jppfDriver + ".sh");
 
 		}
-		processRunner.patientStart();
+		String waitTillLineMatches = "JPPF Driver initialization complete";
+		processRunner.patientStart(waitTillLineMatches);
 		int exitedWith = processRunner.getExitedWith();
-		assertTrue("Process exit with non-zero exit code", processRunner.isExited() && exitedWith == 0);
+		assertTrue("Process exit with non-zero exit code",  processRunner.isServiceReady() || processRunner.isExited() && exitedWith == 0);
 
 	}
 

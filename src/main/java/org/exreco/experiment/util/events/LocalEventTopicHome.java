@@ -5,14 +5,14 @@ import java.util.Map;
 
 public class LocalEventTopicHome implements EventTopicHome {
 
-	private final Map<String, EventHub<LiffEvent>> topics = new HashMap<String, EventHub<LiffEvent>>();
+	private final Map<String, EventHub> topics = new HashMap<String, EventHub>();
 
 	@Override
-	public LiffEventListener<LiffEvent> getEventListener(String topicName)
+	public LiffEventListener getEventListener(String topicName)
 			throws Exception {
-		EventHub<LiffEvent> eventListener = this.getTopics().get(topicName);
+		EventHub eventListener = this.getTopics().get(topicName);
 		if (eventListener == null) {
-			eventListener = new EventHub<LiffEvent>();
+			eventListener = new EventHub();
 			this.getTopics().put(topicName, eventListener);
 
 		}
@@ -20,12 +20,12 @@ public class LocalEventTopicHome implements EventTopicHome {
 	}
 
 	@Override
-	public EventSource<LiffEvent> getEventSource(String topicName)
+	public EventSource getEventSource(String topicName)
 			throws Exception {
 
-		EventHub<LiffEvent> eventSource = this.getTopics().get(topicName);
+		EventHub eventSource = this.getTopics().get(topicName);
 		if (eventSource == null) {
-			eventSource = new EventHub<LiffEvent>();
+			eventSource = new EventHub();
 			this.getTopics().put(topicName, eventSource);
 
 		}
@@ -35,7 +35,7 @@ public class LocalEventTopicHome implements EventTopicHome {
 	/**
 	 * @return the topics
 	 */
-	public Map<String, EventHub<LiffEvent>> getTopics() {
+	public Map<String, EventHub> getTopics() {
 		return topics;
 	}
 
