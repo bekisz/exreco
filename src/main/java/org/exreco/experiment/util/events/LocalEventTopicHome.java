@@ -3,7 +3,7 @@ package org.exreco.experiment.util.events;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LocalEventTopicHome implements EventTopicHome {
+public class LocalEventTopicHome  implements EventTopicHome {
 
 	private final Map<String, EventHub> topics = new HashMap<String, EventHub>();
 

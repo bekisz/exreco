@@ -35,8 +35,15 @@
 		lazy-init="true" />
 	<alias name="localEventTopicHome" alias="eventTopicHome" />
 	<!-- -->
+
+	<bean id="loggerService" class="org.exreco.log.LoggerService"
+		init-method="init" depends-on="eventTopicHome">
+		<property name="configLocation" value="log4j2-central.xml" />
+
+	</bean>
+
 	<bean id="deployment" class="org.exreco.experiment.Deployment"
-		lazy-init="true" init-method="init">
+		 init-method="init" depends-on="loggerService">
 		<property name="executor">
 			<ref local="multiThreadExecutorService" />
 		</property>

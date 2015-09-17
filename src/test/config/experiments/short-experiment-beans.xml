@@ -14,7 +14,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 						<!-- probabilities of the this isoworld group -->
 						<entry key="isoCaseId">
 							<bean class="org.exreco.experiment.dim.IncrementedIntegerDimension"
-								p:max="1" />
+								p:max="2" />
 						</entry>
 
 						<entry key="eveGene.chanceOfSuccessfulMutation">
@@ -24,7 +24,7 @@ http://www.springframework.org/schema/beans http://www.springframework.org/schem
 <!--
 						<entry key="space.squareSide">
 							<bean class="org.exreco.experiment.dim.ListedIntegerDimension">
-								<constructor-arg value="1,3" />
+								<constructor-arg value="1,3,5" />
 							</bean>
 						</entry>
 						<entry key="space.regionHoppingChance">

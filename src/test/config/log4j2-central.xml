@@ -4,24 +4,15 @@
 
 
 
-<configuration status="error" monitorInterval="10" packages="org.exreco.log">
+<configuration status="error" monitorInterval="10">
 
 	<Appenders>
 
-		<DistributedAppender name="exrecoAppender" />
-		<!-- Sends error messages into memory so that unit tests can assert assert 
-			success by these log messages <MemoryAppender name="unitTestAppender" /> -->
-
+	
 		<Console name="console" target="SYSTEM_OUT">
-			<!-- filters> <DynamicThresholdFilter key="case-id" onMatch="ACCEPT" onMismatch="DENY"> 
-				<ValueLevelPair key="2" threshold="DEBUG"/> <ValueLevelPair key="10" threshold="DEBUG"/> 
-				<ValueLevelPair key="25" threshold="DEBUG"/> </DynamicThresholdFilter> <MarkerFilter 
-				marker="SQL" onMatch="DENY" onMismatch="NEUTRAL"/> </filters -->
-
-			<!-- <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="DENY"> <KeyValuePair 
-				key="case-id" value="2"/> </ThreadContextMapFilter> -->
+		
 			<PatternLayout
-				pattern="%d{HH:mm:ss.SSS} pid:%X{pid} [%t]
+				pattern="C %d{HH:mm:ss.SSS} pid:%X{pid} [%t]
 				%-5level
 				%class
 				%L
@@ -30,6 +21,16 @@
 				%msg%xEx%n" />
 		</Console>
 
+		<File name="fileLog" fileName="output/test/exreco.log">
+			<PatternLayout
+				pattern="C %d{HH:mm:ss.SSS} pid:%X{pid} [%t]
+				%-5level
+				%class
+				%L
+				%M
+				-
+				%msg%xEx%n" />
+		</File>
 
 		<!-- Socket name="socket" protocol="UDP" host="localhost" port="9500"> 
 			</Socket -->
@@ -39,9 +40,8 @@
 	</Appenders>
 	<loggers>
 		<root level="debug">
+
 			<appender-ref ref="console" />
-			<!--<appender-ref ref="unitTestAppender" />  -->
-			<appender-ref ref="exrecoAppender" />
 		</root>
 		<logger name="org.exreco" level="debug" additivity="true">
 

@@ -32,7 +32,7 @@ public final class JmsConnection {
 				logger.error(
 						"Failed to create JMS connection: " + e.toString(), e);
 			}
-			logger.debug("JMS connection initialised");
+			// logger.debug("JMS connection initialised");
 		}
 		return connection;
 

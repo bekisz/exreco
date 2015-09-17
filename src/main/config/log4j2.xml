@@ -4,11 +4,12 @@
 
 
 
-<configuration status="error" monitorInterval="10">
+<configuration status="error" monitorInterval="10"
+	packages="org.exreco.log">
 
 	<appenders>
 
-
+		<!--  <DistributedAppender name="exrecoAppender" /> -->
 		<Console name="console" target="SYSTEM_OUT">
 			<!-- filters> <DynamicThresholdFilter key="case-id" onMatch="ACCEPT" onMismatch="DENY"> 
 				<ValueLevelPair key="2" threshold="DEBUG"/> <ValueLevelPair key="10" threshold="DEBUG"/> 
@@ -48,10 +49,11 @@
 	</appenders>
 	<loggers>
 		<root level="debug">
-			<appender-ref ref="console" />
-
+		
+			<appender-ref ref="console" /> 
+			<appender-ref ref="exrecoAppender" />  
 		</root>
-	<logger name="org.exreco" level="debug" additivity="true">
+		<logger name="org.exreco" level="debug" additivity="true">
 
 
 		</logger>

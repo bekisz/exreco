@@ -1,23 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-    <configuration status="warn"  monitorInterval="10" >
+    <configuration status="error"  monitorInterval="0" packages="org.exreco.log">
 
 	<appenders>
-
-
+	<!--
+		 <DistributedAppender name="exrecoAppender" /> 
 		<Console name="Console" target="SYSTEM_OUT">
-				<!--
 				
-			<filters>
-				<DynamicThresholdFilter key="case-id" onMatch="ACCEPT"
-				onMismatch="DENY">
-					<KeyValuePair key="1" value="DEBUG"/>
-					<KeyValuePair key="2" value="DEBUG"/>
-					<KeyValuePair key="10" value="DEBUG"/>
-					<KeyValuePair key="25" value="DEBUG"/>
-				</DynamicThresholdFilter>
-				<MarkerFilter marker="SQL" onMatch="DENY" onMismatch="NEUTRAL"/>
-			</filters>
-				-->
 				
 			<PatternLayout pattern="M %d{HH:mm:ss.SSS} cid#%X{case-id} [%t] %-5level %class{1.}
 				%L
@@ -26,14 +14,7 @@
 				-
 				%msg%xEx%n"/>
 		</Console>
-		<File name="log-file" fileName="output/experiment.log" append="false">
-			<PatternLayout pattern="%d{HH:mm:ss.SSS} cid#%X{case-id} [%t] %-5level %class{1.}
-				%L
-				%M
-				%marker
-				-
-				%msg%xEx%n"/>
-		</File>
+		-->
 		<!-- Socket name="socket" protocol="TCP" host="localhost" port="8099" immediateFlush="true">
 
 		</Socket
@@ -67,7 +48,7 @@
 
 			<appender-ref ref="log-file"/>
 				-->
-
+	
 			 <!-- <appender-ref ref="Console"/> -->
 			 <!-- <appender-ref ref="FailoverLiffLog4j2Queue"/> --> 
 		</logger>
@@ -79,8 +60,8 @@
 	
 		<root level="debug">
 			<!-- appender-ref ref="socket"/ -->
-			<appender-ref ref="LiffLog4j2Events"/>
-	
+			 <!-- <appender-ref ref="LiffLog4j2Events"/>  -->
+			  <!-- <appender-ref ref="exrecoAppender" /> --> 
 			<!--appender-ref ref="Console"/-->
 			<!--appender-ref ref="log-file"/ -->
 		

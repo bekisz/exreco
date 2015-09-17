@@ -25,8 +25,7 @@ public class JvmProcessRunner extends ProcessRunner {
 
 		List<String> jvmOptions = new ArrayList<>();
 		List<String> cpElements = new ArrayList<>();
-		String classPath = System.getProperty("java.class.path");
-		cpElements.add(classPath);
+
 		String s = this.getJvmOptions();
 		if (s != null) {
 			String[] options = s.split("\\s");
@@ -39,6 +38,9 @@ public class JvmProcessRunner extends ProcessRunner {
 					jvmOptions.add(option);
 			}
 		}
+		String classPath = System.getProperty("java.class.path");
+		cpElements.add(classPath);
+		
 		String javaHomeDir = System.getProperty("java.home");
 
 		if (javaHomeDir == null) {

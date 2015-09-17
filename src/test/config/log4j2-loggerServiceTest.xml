@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="warn" monitorInterval="10"
+	packages="org.exreco.log">
+
+	<appenders>
+
+
+		<DistributedAppender name="exrecoAppender" />
+
+		<Console name="console" target="SYSTEM_OUT">
+			<!-- filters> <DynamicThresholdFilter key="case-id" onMatch="ACCEPT" onMismatch="DENY"> 
+				<ValueLevelPair key="2" threshold="DEBUG"/> <ValueLevelPair key="10" threshold="DEBUG"/> 
+				<ValueLevelPair key="25" threshold="DEBUG"/> </DynamicThresholdFilter> <MarkerFilter 
+				marker="SQL" onMatch="DENY" onMismatch="NEUTRAL"/> </filters -->
+
+			<!-- <ThreadContextMapFilter onMatch="ACCEPT" onMismatch="DENY"> <KeyValuePair 
+				key="case-id" value="2"/> </ThreadContextMapFilter> -->
+			<PatternLayout
+				pattern="IT %d{HH:mm:ss.SSS} pid:%X{pid} [%t]
+				%-5level
+				%class
+				%L
+				%M
+				-
+				%msg%xEx%n" />
+		</Console>
+	</appenders>
+	<loggers>
+		
+		<root level="debug">
+
+			<appender-ref ref="exrecoAppender" />
+			<appender-ref ref="console" />
+
+		</root>
+	</loggers>
+</configuration>

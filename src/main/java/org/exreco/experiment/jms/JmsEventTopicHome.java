@@ -1,5 +1,9 @@
 package org.exreco.experiment.jms;
 
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,16 +11,25 @@ import java.util.Map;
 import org.exreco.experiment.util.events.EventHub;
 import org.exreco.experiment.util.events.EventSource;
 import org.exreco.experiment.util.events.EventTopicHome;
-import org.exreco.experiment.util.events.LiffEvent;
 import org.exreco.experiment.util.events.LiffEventListener;
 
 
-public class JmsEventTopicHome implements EventTopicHome {
+public class JmsEventTopicHome  implements EventTopicHome, Serializable {
 
-	private final Map<String, LiffEvent2JmsEventAdapter> topicInputMap = new HashMap<String, LiffEvent2JmsEventAdapter>();
-	private final Map<String, JmsMessageReceiver> jmsReceiverMap = new HashMap<String, JmsMessageReceiver>();
-	private final Map<String, EventHub> topicOutputMap = new HashMap<String, EventHub>();
 
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2699924834297943454L;
+	transient private final Map<String, LiffEvent2JmsEventAdapter> topicInputMap = new HashMap<String, LiffEvent2JmsEventAdapter>();
+	transient private final Map<String, JmsMessageReceiver> jmsReceiverMap = new HashMap<String, JmsMessageReceiver>();
+	transient private final Map<String, EventHub> topicOutputMap = new HashMap<String, EventHub>();
+	public JmsEventTopicHome() {
+		super();
+		// Avoid lazy init so that Exreco appender could run
+		JmsConnection.getConnection();
+	}
 	@Override
 	synchronized public LiffEventListener getEventListener(
 			String topicName) throws Exception {
@@ -70,6 +83,19 @@ public class JmsEventTopicHome implements EventTopicHome {
 	 */
 	public Map<String, EventHub> getTopicOutputMap() {
 		return topicOutputMap;
+	}
+	synchronized private void writeObject(ObjectOutputStream out)
+			throws IOException {
+		out.defaultWriteObject();
+	}
+
+	synchronized private void readObject(ObjectInputStream in)
+			throws IOException, ClassNotFoundException {
+		// our "pseudo-constructor"
+		in.defaultReadObject();
+		JmsConnection.getConnection();
+	
+
 	}
 
 }

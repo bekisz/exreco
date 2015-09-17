@@ -38,21 +38,15 @@
 	<!-- -->
 	<!-- Starts and embedded ActiveMQ Broker -->
 
-	<!-- 
-	<bean id="embeddedBroker" class="org.apache.activemq.xbean.BrokerFactoryBean">
-		<property name="config" value="classpath:activemq/activemq-embedded.xml" />
-		<property name="start" value="true" />
-		<property name="systemExitOnShutdown" value="true" />
-		<property name="systemExitOnStop" value="true" />
-	</bean>
--->
-	<!-- 
-	
-	<bean id="jmsLoggerService" class="org.exreco.log.server.JmsLoggerServiceThread"
-		init-method="start"  /> -->
+	<!-- <bean id="embeddedBroker" class="org.apache.activemq.xbean.BrokerFactoryBean"> 
+		<property name="config" value="classpath:activemq/activemq-embedded.xml" 
+		/> <property name="start" value="true" /> <property name="systemExitOnShutdown" 
+		value="true" /> <property name="systemExitOnStop" value="true" /> </bean> -->
+	<!-- <bean id="jmsLoggerService" class="org.exreco.log.server.JmsLoggerServiceThread" 
+		init-method="start" /> -->
 	<!-- -->
 
- 	<!-- -->
+	<!-- -->
 	<!-- Starts and embedded ActiveMQ Broker -->
 
 	<!-- <bean id="embeddedBroker" class="org.apache.activemq.xbean.BrokerFactoryBean"> 
@@ -66,9 +60,12 @@
 	<!-- -->
 	<bean id="activeMqProcessLauncher" class="org.exreco.experiment.jms.ActiveMqProcessRunner"
 		init-method="patientStart" />
-	<bean id="jmsLoggerProcessLauncher" class="org.exreco.experiment.util.JvmProcessRunner"
+	<bean id="loggerProcessLauncher" class="org.exreco.experiment.util.JvmProcessRunner"
 		init-method="start" depends-on="activeMqProcessLauncher">
-		<property name="mainClass" value="org.exreco.log.server.JmsLoggingService" />
+		<property name="mainClass" value="org.exreco.log.LoggerService" />
+		<!-- 
+		<property name="jvmOptions" value="-cp C:\Dev\github\exreco\src\test\config\logger-service;" />
+		 -->
 	</bean>
 
 	<bean id="jppfDriver" class="org.exreco.experiment.util.ProcessRunner"

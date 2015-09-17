@@ -34,13 +34,20 @@
 	<bean id="jmsEventTopicHome" class="org.exreco.experiment.jms.JmsEventTopicHome"
 		lazy-init="true" />
 	<alias name="jmsEventTopicHome" alias="eventTopicHome" />
+	<bean id="loggerService" class="org.exreco.log.LoggerService"
+		init-method="init" depends-on="eventTopicHome">
+		<property name="configLocation" value="log4j2-central.xml" />
+		<property name="topicName" value="Log4j2Events" />
+		<property name="eventTopicHome" ref="eventTopicHome" />
 
+	</bean>
 	<bean id="deployment" class="org.exreco.experiment.Deployment"
-		lazy-init="false" init-method="init" depends-on="jmsLoggerProcessLauncher">
+		lazy-init="false" init-method="init">
 		<property name="executor">
 			<ref local="multiNodeExecutorService" />
 		</property>
 		<property name="eventTopicHome" ref="eventTopicHome" />
 		<property name="log4j2ConfigLocation" value="log4j2-multi-node.xml" />
 	</bean>
+
 </beans>

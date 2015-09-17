@@ -13,13 +13,11 @@
 		<property name="experiment" ref="experiment" />
 
 	</bean>
-<!-- 
-	<import resource="deployment-beans-single-node.xml" /> -->
-	
-	<import resource="deployment-beans-multi-node-embedded.xml" /> 
-	<!--
-	 <import resource="deployment-beans-multi-node.xml" />  -->
-
+	<!-- -->
+	  <import resource="deployment-beans-single-node.xml" />  
+	 
+	<!-- <import resource="deployment-beans-multi-node-embedded.xml" />   -->
+	 <!--  <import resource="deployment-beans-multi-node.xml" /> -->
 
 	<import resource="experiments/aging/local-competition/alfa/experiment-beans.xml" />
 

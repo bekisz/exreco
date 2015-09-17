@@ -7,6 +7,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.exreco.experiment.util.events.EventTopicHome;
+import org.exreco.log.DistributedAppender;
 
 public class Deployment {
 
@@ -17,9 +18,10 @@ public class Deployment {
 
 	public void init() throws Exception {
 		logger.debug("Deployment init entered.");
-		URI log4j2ConfigLocationURI = new URI(this.log4j2ConfigLocation);
-		LoggerContext loggerContext = (LoggerContext) LogManager.getContext(true);
-		loggerContext.setConfigLocation(log4j2ConfigLocationURI);
+		DistributedAppender.inject2LoggerContext(this.getLog4j2ConfigLocation(), this.getEventTopicHome());
+		//URI log4j2ConfigLocationURI = new URI(this.log4j2ConfigLocation);
+		//LoggerContext loggerContext = (LoggerContext) LogManager.getContext(true);
+		// loggerContext.setConfigLocation(log4j2ConfigLocationURI);
 		//logger = loggerContext.getLogger(Deployment.class.getName());
 		logger.debug("//////////////Deployment init finished.");
 	}

@@ -40,6 +40,7 @@ public class LiffEvent2JmsEventAdapter implements LiffEventListener,
 		super();
 		this.destination = destination;
 
+
 	}
 
 	synchronized protected void init() throws JMSException {
@@ -92,7 +93,9 @@ public class LiffEvent2JmsEventAdapter implements LiffEventListener,
 			this.getMessageProducer().send(message);
 
 		} catch (Exception e) {
-			logger.error("Exception occurred at sending JMS message  ", e);
+			
+			System.err.println("Exception occurred at sending JMS message  ");
+
 			throw e;
 		}
 

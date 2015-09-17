@@ -3,20 +3,37 @@ package org.exreco.experiment;
 import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.Appender;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.config.AppenderRef;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.LoggerConfig;
+import org.apache.logging.log4j.core.jmx.LoggerContextAdmin;
+import org.apache.logging.log4j.core.selector.BasicContextSelector;
 import org.apache.logging.log4j.core.util.Constants;
+import org.apache.logging.log4j.spi.LoggerContextFactory;
 import org.apache.logging.log4j.util.PropertiesUtil;
 import org.exreco.experiment.Case.LifeCycleState;
 import org.exreco.experiment.dim.DimensionSetPoint;
 import org.exreco.experiment.dim.DimensionValue;
 import org.exreco.experiment.dim.ListedSpringReferenceDimension;
+import org.exreco.experiment.jms.JmsEventTopicHome;
+import org.exreco.experiment.log.DisributedLoggingUtils;
 import org.exreco.experiment.util.LiffUtils;
 import org.exreco.experiment.util.events.EventSource;
+import org.exreco.experiment.util.events.EventTopicHome;
+import org.exreco.experiment.util.events.EventTopicHomeBase;
 import org.exreco.experiment.util.events.LiffEvent;
+import org.exreco.log.DistributedAppender;
+import org.exreco.log.ExrecoContextSelector;
+import org.exreco.log.ExrecoLog4jContextFactory;
+import org.jppf.classloader.JPPFClassLoader;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.context.ApplicationContext;
@@ -36,17 +53,19 @@ public class CaseShell implements CaseShellIf, Serializable {
 	private CaseIf proxiedCase = null;
 	private ApplicationContext context;
 	private final EventSource eventSource = new EventSource();
+	private EventTopicHome evenTopicHome;
 	// private ExperimentTracker experimentTracker;
 	private long experimentId;
-	private static String log4j2ConfigFile = null;
+
 	private String log4j2ConfigLocation = null;
+	// private static Boolean isDistributedLoggingInited = new Boolean(false);
 
 	private static Logger logger = LogManager.getLogger(CaseShell.class.getName());
 
 	public CaseShell(String worldBeansXml, String caseTemplateBeanName) {
 		super();
 		this.caseTemplateBeanName = caseTemplateBeanName;
-		this.worldBeansXml  =  worldBeansXml;
+		this.worldBeansXml = worldBeansXml;
 	}
 
 	protected void insertDimensionSetPoint() {
@@ -66,33 +85,10 @@ public class CaseShell implements CaseShellIf, Serializable {
 
 	}
 
-	private synchronized void initLog4j2ConfigFile() {
-		URI log4j2ConfigLocationURI;
-		if (this.getLog4j2ConfigLocation() != null
-				&& !this.getLog4j2ConfigLocation().equals(log4j2ConfigFile)) {
-			try {
-				log4j2ConfigFile = this.getLog4j2ConfigLocation();
 
-				log4j2ConfigLocationURI = new URI(log4j2ConfigFile);
-				LoggerContext loggerContext = (LoggerContext) LogManager.getContext(true);
-				loggerContext.setConfigLocation(log4j2ConfigLocationURI);
+	private void initProxiedCase() throws URISyntaxException {
 
-				logger.debug("Config file loaded");
-
-				String contextSelectorString = PropertiesUtil.getProperties()
-						.getStringProperty(Constants.LOG4J_CONTEXT_SELECTOR);
-				logger.debug("contextSelectorString = " + contextSelectorString);
-
-			} catch (URISyntaxException e) {
-				logger.error("Cannot load new xml config file : {}", log4j2ConfigFile);
-				logger.error(e);
-			}
-		}
-	}
-
-	private void initProxiedCase() {
-
-		initLog4j2ConfigFile();
+		DistributedAppender.inject2LoggerContext(this.getLog4j2ConfigLocation(), this.getEvenTopicHome());
 
 		context = new ClassPathXmlApplicationContext(this.getWorldBeansXml());
 		CaseIf caseIf = (CaseIf) context.getBean(this.getCaseTemplateBeanName());
@@ -252,6 +248,14 @@ public class CaseShell implements CaseShellIf, Serializable {
 
 	public String getLog4j2ConfigLocation() {
 		return log4j2ConfigLocation;
+	}
+
+	public EventTopicHome getEvenTopicHome() {
+		return evenTopicHome;
+	}
+
+	public void setEvenTopicHome(EventTopicHome evenTopicHome) {
+		this.evenTopicHome = evenTopicHome;
 	}
 
 }

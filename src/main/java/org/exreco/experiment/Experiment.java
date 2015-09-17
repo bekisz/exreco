@@ -645,7 +645,7 @@ public class Experiment
 			// Case.LifeCycleState.ENDED) {
 			// continue;
 			// }
-
+			runableCase.setEvenTopicHome(this.getDeployment().getEventTopicHome());
 			ThreadContext.put("case-id", String.valueOf(runableCase.getCaseId()));
 			// CaseShellIf Events -> Tableloggers
 			runableCase.getEventSource().wireTo(this.getTableLoggers());
