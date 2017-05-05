@@ -11,6 +11,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+// Runs nodes in a separate process
+ 
 public class JvmProcessRunnerTest {
 	private static JvmProcessRunner jvmProcessRunner;
 	private static Logger logger = LogManager.getLogger(JvmProcessRunnerTest.class);
